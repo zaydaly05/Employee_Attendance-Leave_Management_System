@@ -1,0 +1,311 @@
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    body, html {
+      height: 100%;
+      background-color: #f8f8f8;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    /* Layout */
+    .container {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+    }
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      background: #fff;
+      border-right: 1px solid #ddd;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar .logo {
+      font-weight: 900;
+      font-size: 2rem;
+      color: #2d2d84;
+      padding: 1.8rem 1.2rem;
+      border-bottom: 1px solid #ddd;
+      user-select: none;
+    }
+    .sidebar nav {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar nav a {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #64606b;
+      border-left: 4px solid transparent;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .sidebar nav a.active {
+      color: #8011f0;
+      border-left: 4px solid #8011f0;
+      background-color: #faf6ff;
+      font-weight: 700;
+    }
+    .sidebar nav a:hover:not(.active) {
+      background-color: #faf6ff;
+    }
+    .sidebar nav a .icon {
+      margin-right: 12px;
+      font-size: 1.3rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* Header */
+    .main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      background: #f8f8f8;
+    }
+    header {
+      height: 56px;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0 1rem;
+      gap: 1.25rem;
+      user-select: none;
+    }
+    header .icon-button {
+      cursor: pointer;
+      font-size: 1.3rem;
+      position: relative;
+    }
+    header .icon-button .profile-circle {
+      width: 30px;
+      height: 30px;
+      background: #64606b;
+      border-radius: 50%;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      user-select: none;
+    }
+    header .icon-button svg {
+      fill: #64606b;
+      width: 18px;
+      height: 18px;
+    }
+    header .icon-button.dropdown svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Content */
+    .content {
+      padding: 1rem 1.5rem;
+      overflow-y: auto;
+      height: calc(100vh - 56px);
+    }
+    .welcome {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    /* Emoji style */
+    .welcome .wave {
+      font-size: 1.3rem;
+    }
+    /* Button */
+    .btn-request {
+      background-color: #f82e7c;
+      border-radius: 4px;
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border: none;
+      padding: 7px 14px;
+      cursor: pointer;
+      user-select: none;
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background-color 0.3s ease;
+    }
+    .btn-request:hover {
+      background-color: #de2a71;
+    }
+    .btn-request svg {
+      width: 14px;
+      height: 14px;
+      stroke: white;
+      stroke-width: 1.5;
+    }
+    /* Leave cards container */
+    .leave-cards {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      user-select: none;
+      flex-wrap: wrap;
+    }
+    .leave-card {
+      flex: 1 1 120px;
+      background: white;
+      border-radius: 5px;
+      padding: 12px 14px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.06);
+      border: 1px solid #eee;
+      min-width: 120px;
+    }
+    .leave-card .title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      text-transform: capitalize;
+    }
+    .leave-card .circle-bg {
+      position: relative;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 5px;
+    }
+    /* circle percentages */
+    .leave-card svg {
+      transform: rotate(-90deg);
+    }
+    .leave-card circle {
+      fill: none;
+      stroke-width: 6;
+      stroke-linecap: round;
+    }
+    .leave-card .circle-bg circle {
+      stroke: #eee;
+    }
+    /* colors for different leave types */
+    .leave-card.casual .progress {
+      stroke: #8b3ee5;
+    }
+    .leave-card.sick .progress {
+      stroke: #2ec2f9;
+    }
+    .leave-card.earned .progress {
+      stroke: #7ed859;
+    }
+    .leave-card.unpaid .progress {
+      stroke: #ff2e61;
+    }
+    .leave-card.half .progress {
+      stroke: #fcb63a;
+    }
+    .leave-card .percent {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: 700;
+      font-size: 0.8rem;
+      user-select: none;
+    }
+    .leave-card .details {
+      font-size: 0.7rem;
+      color: #888;
+      user-select: none;
+    }
+    .leave-card .details span {
+      display: block;
+      line-height: 1.2;
+    }
+
+    /* Section containers */
+    .section {
+      background: white;
+      padding: 12px 16px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.06);
+      border: 1px solid #eee;
+      margin-bottom: 18px;
+      user-select: none;
+    }
+    .section-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+    .section.flex-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .section.flex-row > div {
+      flex: 1;
+      min-width: 200px;
+    }
+    /* Announcements */
+    .announcements {
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #bbb;
+      font-size: 2rem;
+    }
+    /* Leave Request */
+    .leave-request {
+      height: 170px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #bbb;
+      font-size: 3rem;
+      cursor: default;
+    }
+    /* Placeholders icons from image */
+    .placeholder-icon {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto;
+      fill: #c9c9c9;
+      user-select: none;
+    }
+    /* Who's on leave box */
+    .whos-on-leave {
+      user-select: none;
+    }
+    /* Filter inline */
+    .filter {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+    .filter .count {
+      color: #ff2e7c;
+      font-weight: 600;
+    }
+    .filter select {
+      padding: 2px 4px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+ 

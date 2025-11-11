@@ -1,0 +1,76 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Request-Time Off</title>
+  <link rel="stylesheet" href="../Public/Css/requestTimeOff.css" />
+</head>
+<body>
+  <!-- Main page background content (dimmed) -->
+  <div class="page-content">
+    <!-- Your page content (e.g. login background) goes here -->
+  </div>
+
+  <div id="background-container"></div>
+
+
+<!-- Request Time Off Modal -->
+<div class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-desc" model-desc>
+  <div class="modal">
+    <header class="modal-header">
+      <h2 id="modal-title">Request Time Off</h2>
+      <button class="close-btn" aria-label="Close modal">&times;</button>
+      <link rel="stylesheet" href="../Public/Css/RequestTimeOff.css" />
+    </header>
+
+    <form class="request-timeoff-form" action="/requestTimeOff" method="POST" novalidate>
+      <label for="leave-type">Type</label>
+      <select id="leave-type" name="leaveType" required>
+        <option value="" disabled selected>Select Leave Type</option>
+        <option value="Casual Leave">Casual Leave</option>
+        <option value="Sick Leave">Sick Leave</option>
+        <option value="Earned Leave">Earned Leave</option>
+        <option value="Unpaid Leave">Unpaid Leave</option>
+        <option value="Half Leave">Half Leave</option>
+      </select>
+
+      <label for="start-date">Start Date</label>
+      <input type="date" id="start-date" name="startDate" placeholder="MM-DD-YYYY" required autocomplete="off" />
+
+      <label for="end-date">End Date</label>
+      <input type="date" id="end-date" name="endDate" placeholder="MM-DD-YYYY" required autocomplete="off" />
+
+      <label for="reason">Reason</label>
+      <textarea id="reason" name="reason" placeholder="Reason" rows="4" required></textarea>
+
+      <button type="submit" class="btn-submit">Done</button>
+    </form>
+  </div>
+</div>
+  <script>
+    // Load dashboard background dynamically
+    fetch("userDshboard.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("background-container").innerHTML = html;
+      })
+      .catch(err => console.error("Error loading dashboard:", err));
+
+    // Close modal button
+    document.addEventListener("click", (e) => {
+      if (e.target.classList.contains("close-btn")) {
+        document.querySelector(".modal-overlay").style.display = "none";
+      }
+    });
+  </script>
+<script>
+    // Close modal on clicking close button
+    document.querySelector('.close-btn').addEventListener('click', () => {
+      document.querySelector('.modal-overlay').style.display = 'none';
+    });
+  </script>
+</body>
+</html>
