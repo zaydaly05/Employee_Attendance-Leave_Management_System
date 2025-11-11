@@ -270,22 +270,7 @@
     </form>
   </div>
 </div>
-  <script>
-    // Load dashboard background dynamically
-    fetch("userDshboard.html")
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("background-container").innerHTML = html;
-      })
-      .catch(err => console.error("Error loading dashboard:", err));
-
-    // Close modal button
-    document.addEventListener("click", (e) => {
-      if (e.target.classList.contains("close-btn")) {
-        document.querySelector(".modal-overlay").style.display = "none";
-      }
-    });
-  </script>
+  
 <script>
     // Close modal on clicking close button
     document.querySelector('.close-btn').addEventListener('click', () => {
