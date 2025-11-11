@@ -1,5 +1,5 @@
 <?php
-require_once 'db.php';
+require_once 'dbConnect.php';
 
 class Employee {
     private $conn;
