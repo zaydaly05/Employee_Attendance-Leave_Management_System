@@ -60,13 +60,13 @@ switch ($path_lower) {
     case '/':
         // Extract base_url for use in view
         $base_url = $base_url_for_views;
-        require $view_path . 'index.php';
-        break;
-        
-    case '/login':
-        $base_url = $base_url_for_views;
         require $view_path . 'login.php';
         break;
+        
+    // case '/login':
+    //     $base_url = $base_url_for_views;
+    //     require $view_path . 'login.php';
+    //     break;
 
     case '/signup':
         $base_url = $base_url_for_views;

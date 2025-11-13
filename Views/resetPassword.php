@@ -64,7 +64,7 @@
         <label for="reset-email">Your Email</label>
         <input type="email" id="reset-email" name="email" placeholder="Enter Email Here" autocomplete="email" required />
     
-        <button type="submit" class="btn-submit" onclick="window.location.href='<?php echo $base_url; ?>login'; return false;">
+        <button type="submit" class="btn-submit" onclick="window.location.href='<?php echo $base_url; ?>'; return false;">
           Submit
         </button>
       </form>

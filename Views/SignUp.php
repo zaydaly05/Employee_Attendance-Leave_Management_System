@@ -81,7 +81,7 @@
           </div>
         </label>
 
-        <button type="button" class="btn-submit" onclick="window.location.href='<?php echo $base_url; ?>login'; return false;">
+        <button type="button" class="btn-submit" onclick="window.location.href='<?php echo $base_url; ?>'; return false;">
           Submit
         </button>
       </form>
