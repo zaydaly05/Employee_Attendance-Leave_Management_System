@@ -4,7 +4,7 @@ class Database {
     private $host = "localhost";
     private $user = "root";
     private $pass = "";
-    private $dbname = "attendance_system";
+    private $dbname = "leave_management";
     public $conn;
 
     public function __construct() {

@@ -17,6 +17,7 @@ require_once $controller_path . 'userC.php';
 
 // --- Create Controller Instances ---
 // Assumes your class in userC.php is named 'UserC'
+// FIX 1: Change 'new User()' to 'new UserC()'
 $userController = new User(); 
 
 // --- URL Routing ---
@@ -24,8 +25,6 @@ $userController = new User();
 // and loads the correct file.
 
 switch ($path) {
-
-  
 
     case '/': // Root of your site
     case '/login':
@@ -65,9 +64,9 @@ switch ($path) {
     // They call functions (methods) in your UserC.php controller.
 
     case '/auth/login':
-        // Assumes you have a 'handleLogin' method in your UserC class
-       
-       
+        // FIX 2: Add the method call and the 'break;'
+        $userController->handleLogin();
+        break;
 
     case '/auth/signup':
         // Assumes you have a 'handleSignup' method in your UserC class

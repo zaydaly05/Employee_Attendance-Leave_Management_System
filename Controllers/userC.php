@@ -1,5 +1,5 @@
 <?php
-require_once '../Models/user.php';
+require_once __DIR__ . '/../Models/user.php';
 header('Content-Type: application/json');
 
 $user = new User();

@@ -6,6 +6,7 @@
 session_start();
 
 // 2. Get the requested URL path
+// THIS IS THE PART THAT IS MISSING OR WRONG
 $request_uri = $_SERVER['REQUEST_URI'];
 $path = parse_url($request_uri, PHP_URL_PATH);
 
@@ -18,8 +19,7 @@ $path = parse_url($request_uri, PHP_URL_PATH);
 $root_dir = __DIR__ . '/..';
 
 // 4. Include the router
-// The router file will handle the request and show the correct page.
-// We use the $path variable inside routes.php
+// This file will now have access to the $path variable
 require_once $root_dir . '/routes.php';
 
 ?>
