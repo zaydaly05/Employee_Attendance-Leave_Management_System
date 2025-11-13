@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dashboard - digg</title>
-  <link rel="stylesheet" href="../Public/Css/User Dashboard.css" />
-  <link rel="stylesheet" href="../Public/Css/leaveSummary.css" />
+  <link rel="stylesheet" href="<?php echo $base_url; ?>Public/Css/User Dashboard.css" />
+  <link rel="stylesheet" href="<?php echo $base_url; ?>Public/Css/leaveSummary.css" />
 </head>
 <body>
   <div class="container">
@@ -13,11 +13,11 @@
     <aside class="sidebar">
       <div class="logo">digg</div>
       <nav>
-        <a href="/dashboard" class="menu-item active">
+        <a href="<?php echo $base_url; ?>dashboard" class="menu-item active">
           <span class="icon" aria-hidden="true">▦</span>
           Dashboard
         </a>
-        <a href="/history" class="menu-item">
+        <a href="<?php echo $base_url; ?>history" class="menu-item">
           <span class="icon" aria-hidden="true">⏲️</span>
           History
         </a>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>History - digg Dashboard</title>
-  <link rel="stylesheet" href="../Public/Css/history.css" />
+  <link rel="stylesheet" href="<?php echo $base_url; ?>Public/Css/history.css" />
 </head>
 <body>
   <div class="container">
@@ -12,12 +12,12 @@
     <aside class="sidebar">
       <div class="logo">digg</div>
       <nav>
-        <a href="userDashboard.html">
+        <a href="<?php echo $base_url; ?>dashboard">
           <span class="icon" aria-hidden="true">📊</span>
           Dashboard
         </a>
         
-        <a href="history dashboard.html" class="active">
+        <a href="<?php echo $base_url; ?>history" class="active">
           <span class="icon" aria-hidden="true">⏰</span>
           History
         </a>

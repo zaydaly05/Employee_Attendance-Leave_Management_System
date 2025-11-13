@@ -10,11 +10,27 @@ class Attendance {
         $this->conn = $database->conn;
     }
 
-    public function markAttendance($employee_id, $date, $status) {
+    public function markAttendance($employee_id, $status, $date) {
         $sql = "INSERT INTO {$this->table} (employee_id, date, status) VALUES (?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("iss", $employee_id, $date, $status);
         return $stmt->execute();
+    }
+
+    public function getAttendanceHistory($employee_id) {
+        $sql = "SELECT * FROM {$this->table} WHERE employee_id = ? ORDER BY date DESC";
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            return ["success" => false, "message" => "Prepare failed: " . $this->conn->error];
+        }
+        $stmt->bind_param("i", $employee_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $attendance = [];
+        while ($row = $result->fetch_assoc()) {
+            $attendance[] = $row;
+        }
+        return ["success" => true, "data" => $attendance];
     }
 
     public function getAttendanceByDate($date) {

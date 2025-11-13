@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dashboard</title>
-<link rel="stylesheet" href="../Public/Css/User Dashboard.css" />
+<link rel="stylesheet" href="<?php echo $base_url; ?>Public/Css/User Dashboard.css" />
 </head>
 <body>
   <div class="container">
@@ -16,7 +16,7 @@
           <span class="icon" aria-hidden="true">📊</span>
           Dashboard
         </a>
-        <a href="history dashboard.html">
+        <a href="<?php echo $base_url; ?>history">
           <span class="icon" aria-hidden="true">⏰</span>
           History
         </a>
@@ -36,7 +36,7 @@
         <div style="display:flex; align-items:center; gap: 12px; margin-bottom: 12px; flex-wrap:wrap;">
           <div class="welcome">Welcome back, Zayd <span class="wave" aria-label="waving hand" role="img">👋</span></div>
           
-          <a href="requestTimeOff.html" class="btn-request" aria-label="Request Time Off" role="button">
+          <a href="<?php echo $base_url; ?>request-time-off" class="btn-request" aria-label="Request Time Off" role="button">
             <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               viewBox="0 0 24 24"><path d="M8 7V3M16 7V3M3 11h18M5 19h14a2 2 0 002-2v-5H3v5a2 2 0 002 2z"></path></svg>
             Request Time Off

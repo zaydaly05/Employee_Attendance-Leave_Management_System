@@ -1,32 +1,69 @@
 <?php
-require_once __DIR__ . '/../Models/dbConnect.php';
+// LeaveC.php - Leave Controller
+// This controller handles leave-related requests
 
-// Check if form is submitted
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $leave_type = $_POST['leave_type'];
-    $start_date = $_POST['start_date'];
-    $end_date = $_POST['end_date'];
-    $reason = $_POST['reason'];
+require_once __DIR__ . '/../Models/leave.php';
 
-    // Dummy employee name for now (you can use session later)
-    $employee_name = "Zayd Ali";
+class LeaveC {
+    private $leaveModel;
 
-    // initialize database connection
-    $database = new Database();
-    $conn = $database->conn;
+    public function __construct() {
+        $this->leaveModel = new Leave();
+    }
 
-    // Insert into database (use prepared statement to avoid SQL injection)
-    $stmt = $conn->prepare("INSERT INTO leaves (employee_name, leave_type, start_date, end_date, reason) VALUES (?, ?, ?, ?, ?)");
-    if ($stmt) {
-        $stmt->bind_param('sssss', $employee_name, $leave_type, $start_date, $end_date, $reason);
-        if ($stmt->execute()) {
-            echo "<script>alert('Leave request submitted successfully!');
-                  window.location.href='apply_leave.php';</script>";
-        } else {
-            echo "Error executing statement: " . $stmt->error;
+    // Handle leave request submission
+    public function handleRequestLeave() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo 'Method Not Allowed';
+            return;
         }
-    } else {
-        echo "Prepare failed: " . $conn->error;
+
+        // Check if user is logged in
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['flash'] = 'Please login to request leave.';
+            header('Location: /login');
+            exit;
+        }
+
+        $employee_id = $_SESSION['user_id'] ?? null;
+        $employee_name = $_SESSION['user_name'] ?? 'Unknown';
+        $leave_type = $_POST['leave_type'] ?? '';
+        $start_date = $_POST['start_date'] ?? '';
+        $end_date = $_POST['end_date'] ?? '';
+        $reason = $_POST['reason'] ?? '';
+
+        if ($leave_type === '' || $start_date === '' || $end_date === '') {
+            $_SESSION['flash'] = 'Please fill in all required fields.';
+            header('Location: /request-time-off');
+            exit;
+        }
+
+        $result = $this->leaveModel->requestLeave($employee_id, $employee_name, $leave_type, $start_date, $end_date, $reason);
+
+        if ($result['success']) {
+            $_SESSION['flash'] = 'Leave request submitted successfully!';
+            header('Location: /request-time-off');
+            exit;
+        } else {
+            $_SESSION['flash'] = $result['message'] ?? 'Failed to submit leave request.';
+            header('Location: /request-time-off');
+            exit;
+        }
+    }
+
+    // Get leave summary for a user
+    public function getLeaveSummary() {
+        if (!isset($_SESSION['user_id'])) {
+            http_response_code(401);
+            echo json_encode(["success" => false, "message" => "Unauthorized"]);
+            return;
+        }
+
+        $employee_id = $_SESSION['user_id'];
+        $summary = $this->leaveModel->getLeaveSummary($employee_id);
+        header('Content-Type: application/json');
+        echo json_encode($summary);
     }
 }
 ?>

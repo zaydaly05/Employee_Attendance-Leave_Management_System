@@ -6,13 +6,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Request-Time Off</title>
-  <link rel="stylesheet" href="../Public/Css/requestTimeOff.css" />
+  <link rel="stylesheet" href="<?php echo $base_url; ?>Public/Css/requestTimeOff.css" />
 </head>
 <body>
   <!-- Main page background content (dimmed) -->
   <div class="page-content">
     <div class="container"> 
-      <link rel="stylesheet" href="../Public/Css/User Dashboard.css" />
+      <link rel="stylesheet" href="<?php echo $base_url; ?>Public/Css/User Dashboard.css" />
     <!-- Sidebar -->  
     <aside class="sidebar">
       <div class="logo">digg</div>
@@ -21,7 +21,7 @@
           <span class="icon" aria-hidden="true">📊</span>
           Dashboard
         </a>
-        <a href="history dashboard.html">
+        <a href="<?php echo $base_url; ?>history">
           <span class="icon" aria-hidden="true">⏰</span>
           History
         </a>
@@ -41,7 +41,7 @@
         <div style="display:flex; align-items:center; gap: 12px; margin-bottom: 12px; flex-wrap:wrap;">
           <div class="welcome">Welcome back, Zayd <span class="wave" aria-label="waving hand" role="img">👋</span></div>
           
-          <a href="requestTimeOff.html" class="btn-request" aria-label="Request Time Off" role="button">
+          <a href="<?php echo $base_url; ?>request-time-off" class="btn-request" aria-label="Request Time Off" role="button">
             <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               viewBox="0 0 24 24"><path d="M8 7V3M16 7V3M3 11h18M5 19h14a2 2 0 002-2v-5H3v5a2 2 0 002 2z"></path></svg>
             Request Time Off
@@ -243,12 +243,12 @@
     <header class="modal-header">
       <h2 id="modal-title">Request Time Off</h2>
       <button class="close-btn" aria-label="Close modal">&times;</button>
-      <link rel="stylesheet" href="../Public/Css/RequestTimeOff.css" />
+      <link rel="stylesheet" href="<?php echo $base_url; ?>Public/Css/RequestTimeOff.css" />
     </header>
 
-    <form class="request-timeoff-form" action="apply_leave.php" method="POST" novalidate>
+    <form class="request-timeoff-form" action="<?php echo $base_url; ?>leave/request" method="POST" novalidate>
       <label for="leave-type">Type</label>
-      <select id="leave-type" name="leaveType" required>
+      <select id="leave-type" name="leave_type" required>
         <option value="" disabled selected>Select Leave Type</option>
         <option value="Casual Leave">Casual Leave</option>
         <option value="Sick Leave">Sick Leave</option>  
@@ -258,10 +258,10 @@
       </select>
 
       <label for="start-date">Start Date</label>
-      <input type="date" id="start-date" name="startDate" placeholder="MM-DD-YYYY" required autocomplete="off" />
+      <input type="date" id="start-date" name="start_date" placeholder="MM-DD-YYYY" required autocomplete="off" />
 
       <label for="end-date">End Date</label>
-      <input type="date" id="end-date" name="endDate" placeholder="MM-DD-YYYY" required autocomplete="off" />
+      <input type="date" id="end-date" name="end_date" placeholder="MM-DD-YYYY" required autocomplete="off" />
 
       <label for="reason">Reason</label>
       <textarea id="reason" name="reason" placeholder="Reason" rows="4" required></textarea>
@@ -274,7 +274,7 @@
 <script>
     // Close modal on clicking close button
  document.querySelector('.close-btn').addEventListener('click', () => {
-  window.location.href = 'userDashboard.html'; 
+  window.location.href = '<?php echo $base_url; ?>dashboard'; 
 });
 
 
