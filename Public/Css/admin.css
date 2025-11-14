@@ -1,0 +1,116 @@
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+.sidebar {
+    position: fixed;
+    width: 220px;
+    height: 100vh;
+    background-color: #fff;
+    border-right: 1px solid #ddd;
+    padding: 20px;
+}
+.logo {
+    font-weight: 700;
+    font-size: 24px;
+    color: #3c18ff;
+    margin-bottom: 30px;
+}
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+.sidebar ul li {
+    margin-bottom: 20px;
+}
+.sidebar ul li a {
+    color: #6a33a8;
+    text-decoration: none;
+    font-weight: 600;
+}
+.sidebar ul li.active a {
+    background-color: #ede3ff;
+    padding: 10px 15px;
+    border-radius: 6px;
+    display: block;
+}
+.main-content {
+    margin-left: 220px;
+    padding: 20px 40px;
+    max-width: 900px;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.user-profile {
+    background-color: #6a33a8;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 50%;
+    font-weight: 700;
+}
+section {
+    background-color: white;
+    padding: 20px;
+    margin-top: 30px;
+    border-radius: 6px;
+    box-shadow: 0 0 4px rgb(0 0 0 / 0.1);
+}
+.post-section textarea {
+    width: 100%;
+    resize: vertical;
+    height: 80px;
+    padding: 10px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+.post-section button {
+    background: #3c18ff;
+    border: none;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+.post-section button:hover {
+    background: #2b0fa3;
+}
+.requests-section h2 {
+    margin-bottom: 15px;
+}
+.request-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.request-card span {
+    font-weight: 600;
+}
+.request-actions button {
+    margin-left: 10px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+.accept-btn {
+    background-color: #28a745;
+    color: white;
+}
+.reject-btn {
+    background-color: #dc3545;
+    color: white;
+}

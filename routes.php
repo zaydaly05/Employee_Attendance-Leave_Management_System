@@ -34,11 +34,12 @@ require_once $model_path . 'dbConnect.php';
 require_once $controller_path . 'userC.php';
 require_once $controller_path . 'leaveC.php';
 require_once $controller_path . 'attendanceC.php';
-
+require_once $controller_path . 'adminC.php';
 // --- Create Controller Instances ---
 $userController = new UserC();
 $leaveController = new LeaveC();
 $attendanceController = new AttendanceC(); 
+$adminController = new adminC();
 
 // --- URL Routing ---
 // This switch statement reads the $path variable from index.php
@@ -102,6 +103,12 @@ switch ($path_lower) {
         require $view_path . 'requestTimeOff.php';
         break;
 
+    case '/admin':
+        // TODO: Add security check
+        $base_url = $base_url_for_views;
+        require $view_path . 'admin.php';
+        break;
+
     case '/logout':
         $base_url = $base_url_for_views;
         session_destroy();
@@ -139,6 +146,22 @@ switch ($path_lower) {
 
     case '/attendance/history':
         $attendanceController->getAttendanceHistory();
+        break;
+
+
+    case '/admin/post-announcement':
+        $adminController->handlePostAnnouncement();
+        break;
+    
+    case '/admin/manage-requests':
+        $adminController->handleManageRequests();
+        break;
+    case '/admin/leave-requests':
+        $adminController->leaveRequests();
+        break;
+
+    case '/admin/user-signup-requests':
+        $adminController->userSignupRequests();
         break;
 
     // --- 404 Not Found ---
