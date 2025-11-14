@@ -26,10 +26,11 @@
 
     <!-- Main content -->
     <div class="main">
-      <header>
+      <!-- <header>
         <button class="icon-btn" aria-label="Notifications">🔔</button>
         <button class="icon-btn profile" aria-label="User Profile">👤 ⌵</button>
-      </header>
+      </header> -->
+      <?php  include_once 'header.php';?>
 
       <main class="content" role="main">
         <h1 class="page-title">History</h1>

@@ -266,7 +266,12 @@
       <label for="reason">Reason</label>
       <textarea id="reason" name="reason" placeholder="Reason" rows="4" required></textarea>
 
-      <button type="submit" class="btn-submit">Done</button>
+      <!-- <button type="submit" class="btn-submit">Done</button> -->
+
+
+       <button type="submit" class="btn-submit" onclick="window.location.href='<?php echo $base_url; ?>dashboard'; return false;">
+          Done
+        </button>
     </form>
   </div>
 </div>

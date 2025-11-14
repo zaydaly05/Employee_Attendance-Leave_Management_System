@@ -25,11 +25,14 @@
     <!-- Main content -->
     <div class="main">
       <header>
-        <button aria-label="Notifications" class="icon-button" title="Notifications">🔔</button>
+        <!-- <button aria-label="Notifications" class="icon-button">🔔</button>
         <button aria-label="Profile" class="icon-button" title="Profile">
           <div class="profile-circle">Z</div>
         </button>
         <button aria-label="Expand Menu" class="icon-button dropdown" title="Expand Menu">⌵</button>
+      </header> -->
+
+      <?php  include_once 'header.php';?>
       </header>
       <main class="content" role="main">
         <!-- Welcome and Request Time Off button -->
