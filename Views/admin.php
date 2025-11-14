@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="./Public/Css/admin.css"/>
+    <?php
+        require_once './Controllers/adminC.php';?>
 </head>
 <body>
     <div class="sidebar">
@@ -26,18 +28,21 @@
            
          
         </header>
+
+        
                  <h1>Welcome back, Admin 👋</h1>
         <section class="post-section">
             <h2>Post Announcement</h2>
-            <form id="announcementForm" action="adminC.php" method="POST">
+            <form id="announcementForm" action="/admin/post-announcement" method="POST">
                 <textarea name="announcement" placeholder="Type your announcement here..." required></textarea>
                 <button type="submit" name="postAnnouncement">Post Announcement</button>
+       
             </form>
         </section>
 
         <section class="post-section">
             <h2>Post Celebration</h2>
-            <form id="celebrationForm" action="adminC.php" method="POST">
+            <form id="celebrationForm" action="/admin/post-announcement" method="POST">
                 <textarea name="celebration" placeholder="Type your celebration here..." required></textarea>
                 <button type="submit" name="postCelebration">Post Celebration</button>
             </form>
@@ -47,7 +52,12 @@
             <h2>User Sign-Up Requests</h2>
             <div id="userSignupRequests">
                 <!-- User sign-up requests will be listed here -->
-                <?php include './Controllers/adminC.php'; userSignupRequests(); ?>
+                <?php 
+                if (!isset($adminController)) {
+                    $adminController = new adminC();
+                }
+                $adminController->userSignupRequests(); 
+                ?>
             </div>
         </section>
 
@@ -55,7 +65,12 @@
             <h2>Leave Requests</h2>
             <div id="leaveRequests">
                 <!-- Leave requests will be listed here -->
-                <?php include './Controllers/adminC.php'; leaveRequests(); ?>
+                <?php 
+                if (!isset($adminController)) {
+                    $adminController = new adminC();
+                }
+                $adminController->leaveRequests(); 
+                ?>
             </div>
         </section>
     </div>
