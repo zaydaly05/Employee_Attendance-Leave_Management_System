@@ -6,7 +6,7 @@ require_once __DIR__ . '/../Models/user.php';
 
 class UserC {
     private $userModel;
-
+    private $db;
     public function __construct() {
         $this->userModel = new User();
     }
@@ -23,6 +23,8 @@ class UserC {
         $password = $_POST['password'] ?? '';
 
         if ($email === '' || $password === '') {
+            // Store the attempted email before redirection
+            $_SESSION['old_email'] = htmlspecialchars($email);
             $_SESSION['flash'] = 'Email and password are required.';
             header('Location: /');
             exit;
@@ -35,7 +37,10 @@ class UserC {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['name'] ?? '';
             $_SESSION['user_email'] = $user['email'] ?? '';
-            $_SESSION['user_role'] = $user['role'] ?? 'employee';
+            $_SESSION['user_role'] = $user['role'] ?? 'user';
+
+            // Clean up any failed login attempts' data
+            unset($_SESSION['old_email']);
             // Regenerate session id to prevent fixation
             session_regenerate_id(true);
             header('Location: /dashboard');
@@ -43,6 +48,8 @@ class UserC {
         }
 
         // Authentication failed
+        // Store the attempted email so the user doesn't have to re-type it
+        $_SESSION['old_email'] = htmlspecialchars($email);
         $_SESSION['flash'] = 'Invalid email or password.';
         header('Location: /');
         exit;

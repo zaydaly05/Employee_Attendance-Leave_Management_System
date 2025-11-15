@@ -42,14 +42,15 @@
           <a href="<?php echo $base_url; ?>reset-password" class="forgot-password">Forgot Password</a>
         </div>
 
-        <button type="button" class="btn-login">Login</button>
+        <button type="submit" class="btn-login">Login</button>
       </form>
     </section>
   </div>
-<script>
+<!-- <script>
    document.querySelector('.btn-login').addEventListener('click', () => {
-  window.location.href = '<?php echo $base_url; ?>dashboard'; 
+  window.location.href = 'dashboard'; 
 });
-</script>
+</script> -->
+
 </body>
 </html>
