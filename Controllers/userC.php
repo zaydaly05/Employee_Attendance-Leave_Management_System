@@ -24,7 +24,7 @@ class UserC {
 
         if ($email === '' || $password === '') {
             $_SESSION['flash'] = 'Email and password are required.';
-            header('Location: /login');
+            header('Location: /');
             exit;
         }
 
@@ -44,10 +44,10 @@ class UserC {
 
         // Authentication failed
         $_SESSION['flash'] = 'Invalid email or password.';
-        header('Location: /login');
+        header('Location: /');
         exit;
     }
-
+    private const ADMIN_SECRET_KEY = 'supersecretadmin123';
     // Handle signup/registration request
     public function handleSignup() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -59,6 +59,7 @@ class UserC {
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
+        $confirmPassword = $_POST['confirmPassword'] ?? '';
         $role = $_POST['role'] ?? 'employee';
 
         if ($name === '' || $email === '' || $password === '') {
@@ -67,6 +68,24 @@ class UserC {
             exit;
         }
 
+        // Validate password confirmation
+        if ($password !== $confirmPassword) {
+            $_SESSION['flash'] = 'Passwords do not match.';
+            header('Location: /signup');
+            exit;
+        }
+            // New variable to capture the secret key
+        $adminKey = $_POST['adminKey'] ?? ''; 
+        
+        // Default role is'user'
+        $role = 'User';
+
+        // --- Role Logic ---
+        // If the submitted admin key matches the secret key, change the role to 'admin'
+        if (!empty($adminKey) && $adminKey === self::ADMIN_SECRET_KEY) {
+            $role = 'admin';
+        }
+        // --- End Role Logic ---
         $result = $this->userModel->register($name, $email, $password, $role);
 
         if ($result['success']) {

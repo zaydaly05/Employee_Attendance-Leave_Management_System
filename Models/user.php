@@ -11,26 +11,42 @@ class User {
     }
 
     public function login($email, $password) {
-        $sql = "SELECT * FROM {$this->table} WHERE email = ? AND password = ?";
+        $sql = "SELECT * FROM {$this->table} WHERE email = ?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("ss", $email, $password);
+        $stmt->bind_param("s", $email);
         $stmt->execute();
-        return $stmt->get_result()->fetch_assoc();
-    }
-   
-    public function register($name, $email, $password, $role = 'employee') {
-        $sql = "INSERT INTO {$this->table} (name, email, password, role) VALUES (?, ?, ?, ?)";
-        $stmt = $this->conn->prepare($sql);
-        if (!$stmt) {
-            return ["success" => false, "message" => "Prepare failed: " . $this->conn->error];
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+        
+        // Verify password using password_verify since passwords are hashed
+        if ($user && password_verify($password, $user['password'])) {
+            return $user;
         }
-        $stmt->bind_param("ssss", $name, $email, $password, $role);
-        if ($stmt->execute()) {
-            return ["success" => true, "message" => "User registered successfully", "id" => $stmt->insert_id];
-        } else {
-            return ["success" => false, "message" => $stmt->error];
-        }
+        
+        return false;
     }
+   public function register($name, $email, $password, $role = 'User') {
+    
+    
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+    
+    $sql = "INSERT INTO {$this->table} (name, email, password, role) VALUES (?, ?, ?, ?)";
+    $stmt = $this->conn->prepare($sql);
+    
+    if (!$stmt) {
+        return ["success" => false, "message" => "Prepare failed: " . $this->conn->error];
+    }
+    
+    $stmt->bind_param("ssss", $name, $email, $hashed_password, $role);
+    
+    if ($stmt->execute()) {
+        return ["success" => true, "message" => "User registered successfully", "id" => $stmt->insert_id];
+    } else {
+        
+        return ["success" => false, "message" => $stmt->error];
+    }
+}
 }
 
 ?>

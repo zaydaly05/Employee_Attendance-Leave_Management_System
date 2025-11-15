@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Login - Leave Management System</title>
   <link rel="stylesheet" href="<?php echo $base_url; ?>Public/Css/login.css" />
+
 </head>
 <body>
   <div class="container">
@@ -27,13 +28,13 @@
         <label for="email">Email</label>
         <div class="input-group">
           <span class="input-icon" aria-hidden="true">📧</span>
-          <input type="email" id="email" name="email" placeholder="Email" required autocomplete="email" />
+          <input type="email" id="email" name="email" placeholder="Email" required autocomplete="email" value="<?php echo htmlspecialchars($GET['email'] ?? ''); ?>"/>
         </div>
 
         <label for="password">Password</label>
         <div class="input-group">
           <span class="input-icon" aria-hidden="true">🔒</span>
-          <input type="password" id="password" name="password" placeholder="Password" required autocomplete="current-password" />
+          <input type="password" id="password" name="password" placeholder="Password" required autocomplete="current-password" value="<?php echo htmlspecialchars($GET['password'] ?? ''); ?>" />
         </div>
 
         <div class="form-links">

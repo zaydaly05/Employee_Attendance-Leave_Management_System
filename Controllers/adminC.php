@@ -160,7 +160,7 @@ class adminC {
 
     // Display user signup requests
     public function userSignupRequests() {
-        $sql = "SELECT id, username, email FROM users WHERE approved = 0";
+        $sql = "SELECT id, name, email FROM users WHERE approved = 0";
         $result = $this->conn->query($sql);
         
         if (!$result) {

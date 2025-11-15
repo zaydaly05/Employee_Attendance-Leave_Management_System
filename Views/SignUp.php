@@ -60,28 +60,46 @@
         <button class="close-btn" aria-label="Close modal">&times;</button>
       </header>
 
-      <form class="signup-form" action="<?php echo $base_url; ?>auth/signup" method="POST" enctype="multipart/form-data" novalidate>
+      <?php if (isset($_SESSION['flash'])): ?>
+        <div class="flash-message" style="padding: 10px; margin: 10px 0; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px;">
+          <?php 
+            echo htmlspecialchars($_SESSION['flash']); 
+            unset($_SESSION['flash']);
+          ?>
+        </div>
+      <?php endif; ?>
+
+      <form class="signup-form" id="signupForm" action="<?php echo $base_url; ?>auth/signup" method="POST" enctype="multipart/form-data" novalidate>
         <label for="name">Name</label>
-        <input type="text" id="name" name="name" placeholder="Enter Your Name" autocomplete="name" required />
+        <input type="text" id="name" name="name" placeholder="Enter Your Name" autocomplete="name" required value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>" />
         
         <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="Your Email" autocomplete="email" required />
+        <input type="email" id="email" name="email" placeholder="Your Email" autocomplete="email" required  value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>"/>
         
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="Password" autocomplete="new-password" required />
+        <input type="password" id="password" name="password" placeholder="Password" autocomplete="new-password" required value="<?php echo htmlspecialchars($_POST['password'] ?? ''); ?>"/>
         
         <label for="confirm-password">Confirm Password</label>
         <input type="password" id="confirm-password" name="confirmPassword" placeholder="Confirm Password" autocomplete="new-password" required />
+        <span id="password-error" style="color: red; font-size: 12px; display: none;">Passwords do not match</span>
+
+        <label for="role">Role (Default: User)</label>
+        <input type="text" id="role-display" value="User" readonly class="form-control-plaintext mb-3" style="font-weight: bold;" />
+
+        <input type="hidden" name="role" id="actual-role-input" value="employee" />
+
+        <label for="admin-key">Admin Key (Optional)</label>
+        <input type="password" id="admin-key" name="adminKey" placeholder="Enter key to register as Admin" autocomplete="off" />
         
-        <label for="picture-upload" class="file-label">
+        <!-- <label for="picture-upload" class="file-label">
           Picture Upload
           <div class="upload-button-wrapper">
             <input type="file" id="picture-upload" name="picture" accept="image/*" />
             <span class="upload-text">Upload File <span class="upload-icon">⬆</span></span>
           </div>
-        </label>
+        </label> -->
 
-        <button type="button" class="btn-submit" onclick="window.location.href='<?php echo $base_url; ?>'; return false;">
+        <button type="submit" class="btn-submit" onclick="window.location.href='<?php echo $base_url; ?>'; return false;">
           Submit
         </button>
       </form>
@@ -90,12 +108,12 @@
 
   <script>
     // Close modal on clicking close button
-   
-
     document.querySelector('.close-btn').addEventListener('click', () => {
-  window.location.href = '<?php echo $base_url; ?>login';
-});
+      window.location.href = '<?php echo $base_url; ?>';
+    });
 
+  
+   
   </script>
 </body>
 </html>
