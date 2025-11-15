@@ -165,6 +165,8 @@
           <!-- Left side bigger -->
           <div style="flex: 2 1 0;">
             <!-- Announcements -->
+             <h3><u>Announcements</u></h3>
+             <br>
             <section class="section announcements" aria-label="Announcements">
               <div class="section-title">Announcements</div>
               <div aria-hidden="true" class="announcements">
@@ -231,4 +233,7 @@
     </div>
   </div>
 </body>
+<footer>
+  <?php  include_once 'footer.php';?>
+</footer>
 </html>

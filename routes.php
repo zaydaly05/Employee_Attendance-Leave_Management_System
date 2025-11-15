@@ -74,6 +74,7 @@ switch ($path_lower) {
         require $view_path . 'SignUp.php';
         break;
 
+    
     case '/reset-password':
         $base_url = $base_url_for_views;
         require $view_path . 'resetPassword.php';
@@ -115,7 +116,11 @@ switch ($path_lower) {
         require $view_path . 'login.php';
         break;
 
-
+    // case '/footer':
+    //     $base_url = $base_url_for_views;
+    //     session_destroy();
+    //     require $view_path . 'footer.php';
+    //     break;
     // --- Action Routes (Controllers) ---
     // These routes handle form submissions (e.g., POST requests)
     // They call functions (methods) in your controllers.

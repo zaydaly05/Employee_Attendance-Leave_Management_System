@@ -43,11 +43,11 @@ body {
     padding: 20px 40px;
     max-width: 900px;
 }
-header {
+/* header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
+} */
 .user-profile {
     background-color: #6a33a8;
     color: white;
