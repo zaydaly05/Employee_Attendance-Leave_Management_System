@@ -159,10 +159,36 @@
             </div>
           </article>
         </section>
+          <div class="attendance-container card">
+            <div class="section flex-row">
+              <div style="flex: 2 1 0;">
 
+            <h3>Daily Attendance</h3>
+            <br>
+            <form method="POST" action="">
+                <label>
+                    <input type="radio" name="attendance" value="present" required> Present
+                </label>
+                <label>
+                    <input type="radio" name="attendance" value="absent"> Absent
+                </label>
+                <label>
+                    <input type="radio" name="attendance" value="remote"> Remote
+                </label>
+                <button type="submit" class="btn-request" style="background-color: darkgreen;" name="mark_attendance">Mark Attendance</button>
+            </form>
+            <?php if(isset($attendance_message)): ?>
+                <p class="attendance-message"><?= htmlspecialchars($attendance_message) ?></p>
+            <?php endif; ?>
+              </div>
+            </div>
+        </div>
+       
         <!-- Main sections in two columns -->
         <div class="section flex-row">
+          
           <!-- Left side bigger -->
+           
           <div style="flex: 2 1 0;">
             <!-- Announcements -->
              <h3><u>Announcements</u></h3>

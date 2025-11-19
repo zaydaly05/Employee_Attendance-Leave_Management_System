@@ -60,6 +60,7 @@
     .sidebar nav a:hover:not(.active) {
       background-color: #faf6ff;
     }
+   
     .sidebar nav a .icon {
       margin-right: 12px;
       font-size: 1.3rem;
@@ -95,6 +96,7 @@
       align-items: center;
       gap: 0.3rem;
     }
+
     header .icon-button .profile-circle {
       width: 30px;
       height: 30px;
@@ -163,6 +165,8 @@
       stroke: white;
       stroke-width: 1.5;
     }
+
+    
     /* Leave cards container */
     .leave-cards {
       display: flex;
@@ -313,4 +317,42 @@
       cursor: pointer;
     }
 
- 
+ .attendance-container {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    font-family: system-ui, sans-serif;
+}
+
+.attendance-container h3 {
+    margin-bottom: 15px;
+}
+
+.attendance-container form label {
+    margin-right: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.attendance-container button {
+    background-color: #7f56da;
+    color: white;
+    font-weight: bold;
+    padding: 7px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.attendance-container button:hover {
+    background-color: #682fc2;
+}
+
+.attendance-message {
+    margin-top: 15px;
+    font-weight: 600;
+    color: green;
+}

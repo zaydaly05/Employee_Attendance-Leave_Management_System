@@ -97,7 +97,12 @@ switch ($path_lower) {
         $base_url = $base_url_for_views;
         require $view_path . 'leaveSummary.php';
         break;
-
+    
+    case '/test':
+        // TODO: Add security check
+        $base_url = $base_url_for_views;
+        require $view_path . 'test2.php';
+        break;
     case '/request-time-off':
         // TODO: Add security check
         $base_url = $base_url_for_views;
