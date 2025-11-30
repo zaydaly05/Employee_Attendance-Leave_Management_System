@@ -192,8 +192,8 @@ class adminC {
     // Display leave requests
     public function leaveRequests() {
         $sql = "SELECT lr.id, u.name, lr.start_date, lr.end_date, lr.reason, lr.status 
-                FROM leave_requests lr 
-                JOIN users u ON lr.user_id = u.id 
+                FROM leaves as lr 
+                JOIN users u ON lr.id = u.id 
                 WHERE lr.status = 'pending'";
         $result = $this->conn->query($sql);
         

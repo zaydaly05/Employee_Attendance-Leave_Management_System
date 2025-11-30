@@ -18,7 +18,7 @@ class UserC {
             echo 'Method Not Allowed';
             return;
         }
-
+        
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
 
