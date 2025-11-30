@@ -153,14 +153,14 @@ class adminC {
                     $_SESSION['flash'] = 'Error preparing statement: ' . $this->conn->error;
                 }
             }
-            header("Location: /admin");
+            header("Location: /EALMS/admin");
             exit();
         }
     }
 
     // Display user signup requests
     public function userSignupRequests() {
-        $sql = "SELECT id, name, email FROM users WHERE approved = 0";
+        $sql = "SELECT id, name, email FROM users ";
         $result = $this->conn->query($sql);
         
         if (!$result) {
@@ -191,7 +191,7 @@ class adminC {
 
     // Display leave requests
     public function leaveRequests() {
-        $sql = "SELECT lr.id, u.username, lr.start_date, lr.end_date, lr.reason, lr.status 
+        $sql = "SELECT lr.id, u.name, lr.start_date, lr.end_date, lr.reason, lr.status 
                 FROM leave_requests lr 
                 JOIN users u ON lr.user_id = u.id 
                 WHERE lr.status = 'pending'";

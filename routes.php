@@ -115,6 +115,7 @@ switch ($path_lower) {
         require $view_path . 'admin.php';
         break;
 
+    
     case '/logout':
         $base_url = $base_url_for_views;
         session_destroy();

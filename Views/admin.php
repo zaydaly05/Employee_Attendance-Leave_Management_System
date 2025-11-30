@@ -4,230 +4,127 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="./Public/Css/admin.css"/>
-    <?php
-        require_once './Controllers/adminC.php';?>
+
+    <link rel="stylesheet" href="./Public/Css/adminn.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+    <script src="./Public/Js/animateNumber.js"></script>
+
+    <?php require_once './Controllers/adminC.php'; ?>
+    
 </head>
+
 <body>
+
+    <!-- SIDEBAR -->
     <div class="sidebar">
         <h2 class="logo">digg</h2>
         <nav>
             <ul>
                 <li class="active"><a href="#">Dashboard</a></li>
-                <li><a href="#">User Sign-Ups</a></li>
-                <li><a href="#">Leave Requests</a></li>
-                <li><a href="#">Announcements</a></li>
-                <li><a href="#">Celebrations</a></li>
+                <li><a href="#user-requests">User Sign-Ups</a></li>
+                <li><a href="#leave-requests">Leave Requests</a></li>
+                <li><a href="#announcements">Announcements</a></li>
+                <li><a href="#celeb">Celebrations</a></li>
             </ul>
         </nav>
     </div>
 
+    <!-- MAIN CONTENT -->
     <div class="main-content">
-        <header>
-            <?php  include_once 'header.php';?>
-           
-         
-        </header>
-         <div class="dashboard-container">
-        <h1 class="dashboard-title">Dashboard Summary</h1>
 
-        <div class="summary-card" id="usersCard">
-            <div class="card-header">
-                <h2 class="card-title">Total Users</h2>
-                <div class="card-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-            </div>
-            <div class="card-value" id="totalUsers">0</div>
-            <p class="card-description">Active employees registered in the system</p>
-        </div>
+        <!-- LEFT COLUMN -->
+        <div class="left-column">
+            <h1>Welcome back, Admin 👋</h1>
 
-        <div class="summary-card" id="leavesCard">
-            <div class="card-header">
-                <h2 class="card-title">Total Leaves</h2>
-                <div class="card-icon">
-                    <i class="fas fa-calendar-times"></i>
-                </div>
-            </div>
-            <div class="card-value" id="totalLeaves">0</div>
-            <p class="card-description">Leave requests this month (Approved & Pending)</p>
-        </div>
+            <!-- Announcement -->
+            <section id="announcements" class="post-section">
+                <h2>Post Announcement</h2>
+                <form action="/admin/post-announcement" method="POST">
+                    <textarea name="announcement" placeholder="Type your announcement..." required></textarea>
+                    <button type="submit">Post Announcement</button>
+                </form>
+            </section>
 
-        <div class="summary-card" id="celebrationCard">
-            <div class="card-header">
-                <h2 class="card-title">Celebration Reminders</h2>
-                <div class="card-icon">
-                    <i class="fas fa-birthday-cake"></i>
-                </div>
-            </div>
-            <div id="celebrationList">
-                <div class="loading">Loading celebrations...</div>
-            </div>
-        </div>
-
-        <button class="refresh-btn" onclick="refreshDashboard()">
-            <i class="fas fa-sync-alt"></i>Refresh Data
-        </button>
-    </div>
-
-    <script>
-        let dashboardData = {
-            totalUsers: 0,
-            totalLeaves: 0,
-            celebrations: []
-        };
-
-        function fetchDashboardData() {
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    const data = {
-                        totalUsers: 156,
-                        totalLeaves: 23,
-                        celebrations: [
-                            {
-                                name: "Ahmed Mohamed",
-                                type: "Birthday",
-                                date: "Nov 22, 2025"
-                            },
-                            {
-                                name: "Sara Hassan",
-                                type: "Work Anniversary",
-                                date: "Nov 25, 2025"
-                            },
-                            {
-                                name: "Mohamed Ali",
-                                type: "Birthday",
-                                date: "Nov 28, 2025"
-                            },
-                            {
-                                name: "Fatima Ibrahim",
-                                type: "Work Anniversary",
-                                date: "Dec 1, 2025"
-                            }
-                        ]
-                    };
-                    resolve(data);
-                }, 500);
-            });
-        }
-
-        function animateValue(element, start, end, duration) {
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                element.textContent = Math.floor(progress * (end - start) + start);
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
-            };
-            window.requestAnimationFrame(step);
-        }
-
-        function updateTotalUsers(count) {
-            const element = document.getElementById('totalUsers');
-            animateValue(element, 0, count, 1000);
-        }
-
-        function updateTotalLeaves(count) {
-            const element = document.getElementById('totalLeaves');
-            animateValue(element, 0, count, 1000);
-        }
-
-        function updateCelebrations(celebrations) {
-            const listElement = document.getElementById('celebrationList');
+            <!-- Celebration -->
+            <section id="celeb" class="post-section">
+                <h2>Post Celebration</h2>
+                <form action="/admin/post-celebration" method="POST">
+                    <textarea name="celebration" placeholder="Write your celebration..." required></textarea>
+                    <button type="submit">Post Celebration</button>
+                </form>
+            </section>
             
-            if (celebrations.length === 0) {
-                listElement.innerHTML = '<p class="card-description">No upcoming celebrations</p>';
-                return;
-            }
+            <!-- User Requests -->
+          
+            <section id="user-requests" class="requests-section" style="margin-bottom: 0 !important;">
+                <h2>User Sign-Up Requests</h2>
+                <?php 
+                    if (!isset($adminController)) $adminController = new adminC();
+                    $adminController->userSignupRequests(); 
+                    // $adminController->handleManageRequests();
+                ?>
+            </section>
+            <br>
+            <section class="requests-section" id="leave-requests" style="width: 850px; margin-top: 0 !important;">   <!-- Leave Requests -->
+                    <h2>Leave Requests</h2>
+                    <?php 
+                        if (!isset($adminController)) $adminController = new adminC();
+                        $adminController->leaveRequests(); 
+                    ?>
+                </section>
+        </div>
 
-            let html = '';
-            celebrations.forEach(celebration => {
-                html += `
-                    <div class="celebration-item">
-                        <div class="celebration-name">${celebration.name}</div>
-                        <div class="celebration-date"><i class="fas fa-calendar"></i> ${celebration.date}</div>
-                        <span class="celebration-type">${celebration.type}</span>
+        <!-- RIGHT COLUMN -->
+        <div class="right-column">
+                
+            <!-- DASHBOARD SUMMARY -->
+            <div class="dashboard-container">
+                <h1 class="dashboard-title">Dashboard Summary</h1>
+
+                <div class="summary-card" id="usersCard">
+                    <div class="card-header">
+                        <h2 class="card-title">Total Users</h2>
+                        <div class="card-icon"><i class="fas fa-users"></i></div>
                     </div>
-                `;
-            });
-            listElement.innerHTML = html;
-        }
+                    <div class="card-value" id="totalUsers">0</div>
+                    <p class="card-description">Active employees registered</p>
+                </div>
 
-        async function refreshDashboard() {
-            const btn = document.querySelector('.refresh-btn');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Refreshing...';
-            btn.disabled = true;
+                <div class="summary-card" id="leavesCard">
+                    <div class="card-header">
+                        <h2 class="card-title">Total Leaves</h2>
+                        <div class="card-icon"><i class="fas fa-calendar-times"></i></div>
+                    </div>
+                    <div class="card-value" id="totalLeaves">0</div>
+                    <p class="card-description">Leave requests this month</p>
+                </div>
 
-            const data = await fetchDashboardData();
-            
-            updateTotalUsers(data.totalUsers);
-            updateTotalLeaves(data.totalLeaves);
-            updateCelebrations(data.celebrations);
+                <div class="summary-card" id="celebrationCard">
+                    <div class="card-header">
+                        <h2 class="card-title">Celebration Reminders</h2>
+                        <div class="card-icon"><i class="fas fa-birthday-cake"></i></div>
+                    </div>
+                    <div id="celebrationList">
+                        <div class="loading">Loading...</div>
+                    </div>
+                </div>
 
-            dashboardData = data;
-
-            btn.innerHTML = '<i class="fas fa-sync-alt"></i>Refresh Data';
-            btn.disabled = false;
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            refreshDashboard();
-        });
-
-        setInterval(() => {
-            refreshDashboard();
-        }, 300000);
-    </script>
-        
-                 <h1>Welcome back, Admin 👋</h1>
-        <section class="post-section">
-            <h2>Post Announcement</h2>
-            <form id="announcementForm" action="/admin/post-announcement" method="POST">
-                <textarea name="announcement" placeholder="Type your announcement here..." required></textarea>
-                <button type="submit" name="postAnnouncement">Post Announcement</button>
-       
-            </form>
-        </section>
-
-        <section class="post-section">
-            <h2>Post Celebration</h2>
-            <form id="celebrationForm" action="/admin/post-announcement" method="POST">
-                <textarea name="celebration" placeholder="Type your celebration here..." required></textarea>
-                <button type="submit" name="postCelebration">Post Celebration</button>
-            </form>
-        </section>
-
-        <section class="requests-section">
-            <h2>User Sign-Up Requests</h2>
-            <div id="userSignupRequests">
-                <!-- User sign-up requests will be listed here -->
-                <?php 
-                if (!isset($adminController)) {
-                    $adminController = new adminC();
-                }
-                $adminController->userSignupRequests(); 
-                ?>
-            </div>
-        </section>
-
-        <section class="requests-section">
-            <h2>Leave Requests</h2>
-            <div id="leaveRequests">
-                <!-- Leave requests will be listed here -->
-                <?php 
-                if (!isset($adminController)) {
-                    $adminController = new adminC();
-                }
-                $adminController->leaveRequests(); 
-                ?>
-            </div>
-        </section>
-    </div>
-    
+                <button class="refresh-btn" onclick="refreshDashboard()">
+                    <i class="fas fa-sync-alt"></i>   Refresh Data
+                </button>
+                
+            </div> 
+        </div><!-- RIGHT COLUMN END -->
+      
+            <!-- Leave Requests -->
+                
+    </div><!-- MAIN CONTENT END --> 
+   
 </body>
-<footer>
-  <?php  include_once 'footer.php';?>   
-</footer>
+
+<!-- <footer>
+   <?php //include_once 'footer.php'; ?> 
+</footer> -->
+
 </html>
