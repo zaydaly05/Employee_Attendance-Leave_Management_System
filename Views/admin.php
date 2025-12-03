@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Admin Dashboard</title>
 
-    <link rel="stylesheet" href="./Public/Css/adminn.css"/>
+    <link rel="stylesheet" href="./Public/Css/adminFinal.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
     <script src="./Public/Js/animateNumber.js"></script>
@@ -36,13 +36,18 @@
         <!-- LEFT COLUMN -->
         <div class="left-column">
             <h1>Welcome back, Admin 👋</h1>
+                <?php
+                // Define BASE_PATH once in a central config file or index.php
+                define('BASE_PATH', '/EALMS/'); 
+                // ... rest of your code to render the HTML ...
+                ?>
 
             <!-- Announcement -->
             <section id="announcements" class="post-section">
                 <h2>Post Announcement</h2>
-                <form action="/admin/post-announcement" method="POST">
+                <form action="<?php echo BASE_PATH; ?> /admin/post-announcement" method="POST">
                     <textarea name="announcement" placeholder="Type your announcement..." required></textarea>
-                    <button type="submit">Post Announcement</button>
+                    <button type="submit" onclick="handlePostAnnouncement()">Post Announcement</button>
                 </form>
             </section>
 

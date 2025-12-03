@@ -23,10 +23,10 @@ class Employee {
         return $stmt->get_result()->fetch_assoc();
     }
 
-    public function create($name, $email, $department_id, $role_id) {
-        $sql = "INSERT INTO {$this->table} (name, email, department_id, role_id) VALUES (?, ?, ?, ?)";
+    public function create($name, $email, $department_name, $role_id) {
+        $sql = "INSERT INTO {$this->table} (name, email, department_name, role_id) VALUES (?, ?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("ssii", $name, $email, $department_id, $role_id);
+        $stmt->bind_param("ssii",$name,$email, $department_name, $role_id);
         return $stmt->execute();
     }
 }

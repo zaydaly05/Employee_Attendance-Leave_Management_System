@@ -191,7 +191,7 @@
            
           <div style="flex: 2 1 0;">
             <!-- Announcements -->
-             <h3><u>Announcements</u></h3>
+             <!-- <h3><u>Announcements</u></h3>
              <br>
             <section class="section announcements" aria-label="Announcements">
               <div class="section-title">Announcements</div>
@@ -202,7 +202,35 @@
                   <circle cx="12" cy="17" r="1"></circle>
                 </svg>
               </div>
-            </section>
+            </section> -->
+              <h3><u>Announcements</u></h3>
+              <br>
+            <section class="section announcements" aria-label="Announcements">
+            <div class="section-title">Announcements</div>
+
+              <div class="announcements">
+                  <?php if (!empty($announcements)): ?>
+                      <?php foreach ($announcements as $a): ?>
+                          <div class="announcement-item">
+                              <p><?= htmlspecialchars($a['message']) ?></p>
+                              <small>
+                                  Posted by: <?= htmlspecialchars($a['admin_name']) ?> |
+                                  <?= htmlspecialchars($a['created_at']) ?>
+                              </small>
+                          </div>
+                      <?php endforeach; ?>
+                  <?php else: ?>
+                      <!-- No announcements -->
+                      <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M12 2L2 12h20L12 2z"></path>
+                          <line x1="12" y1="8" x2="12" y2="13"></line>
+                          <circle cx="12" cy="17" r="1"></circle>
+                      </svg>
+                      <!-- <p>No announcements available.</p> -->
+                  <?php endif; ?>
+              </div>
+          </section>
+            <br>
 
             <!-- Leave Request -->
             <section class="section leave-request" aria-label="Leave Request">

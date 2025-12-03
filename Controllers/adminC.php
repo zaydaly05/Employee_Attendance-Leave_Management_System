@@ -18,40 +18,60 @@ class adminC {
     }
 
     // Handle posting announcement
-    public function handlePostAnnouncement() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            http_response_code(405);
-            echo 'Method Not Allowed';
-            return;
+   public function handlePostAnnouncement() {
+    session_start();
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        echo 'Method Not Allowed';
+        return;
+    }
+
+    if (isset($_POST['postAnnouncement'])) {
+
+        // Make sure user is logged in and is an admin
+        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+            $_SESSION['flash'] = "Only admins can post announcements.";
+            header("Location: /login");
+            exit();
         }
 
-        if (isset($_POST['postAnnouncement'])) {
-            $announcement = trim($_POST['announcement'] ?? '');
-            if ($announcement !== '') {
-                $sql = "INSERT INTO announcements (message, created_at) VALUES (?, NOW())";
-                $stmt = $this->conn->prepare($sql);
-                if ($stmt) {
-                    $stmt->bind_param("s", $announcement);
-                    if ($stmt->execute()) {
-                        $_SESSION['flash'] = 'Announcement posted successfully!';
-                        header("Location: /admin");
-                        exit();
-                    } else {
-                        $_SESSION['flash'] = 'Error posting announcement: ' . $stmt->error;
-                        header("Location: /admin");
-                        exit();
-                    }
+        $userId = $_SESSION['user_id'];  // normal user id
+
+        $announcement = trim($_POST['announcement'] ?? '');
+        if ($announcement !== '') {
+
+            $sql = "INSERT INTO announcements (message, created_by, created_at) 
+                    VALUES (?, ?, NOW())";
+
+            $stmt = $this->conn->prepare($sql);
+
+            if ($stmt) {
+                $stmt->bind_param("si", $announcement, $userId);
+
+                if ($stmt->execute()) {
+                    $_SESSION['flash'] = 'Announcement posted successfully!';
+                    header("Location: /admin");
+                    exit();
                 } else {
-                    $_SESSION['flash'] = 'Error preparing statement: ' . $this->conn->error;
+                    $_SESSION['flash'] = 'Error posting announcement: ' . $stmt->error;
                     header("Location: /admin");
                     exit();
                 }
             } else {
-                $_SESSION['flash'] = 'Announcement cannot be empty.';
+                $_SESSION['flash'] = 'Error preparing statement: ' . $this->conn->error;
                 header("Location: /admin");
                 exit();
             }
+
+        } else {
+            $_SESSION['flash'] = 'Announcement cannot be empty.';
+            header("Location: /admin");
+            exit();
         }
+    }
+
+
 
         // Handle posting celebration
         if (isset($_POST['postCelebration'])) {
@@ -159,35 +179,68 @@ class adminC {
     }
 
     // Display user signup requests
-    public function userSignupRequests() {
-        $sql = "SELECT id, name, email FROM users ";
-        $result = $this->conn->query($sql);
-        
-        if (!$result) {
-            echo "<p>Error loading user signup requests: " . htmlspecialchars($this->conn->error) . "</p>";
-            return;
+   public function userSignupRequests() {
+
+    // Handle accept/reject FIRST
+    if (isset($_GET['user_action']) && isset($_GET['user_id'])) {
+        $userId = intval($_GET['user_id']);
+        $action = $_GET['user_action'];
+
+        if ($action === 'accept') {
+            $updateSql = "UPDATE users SET approved = 1 WHERE id = ?";
+            $stmt = $this->conn->prepare($updateSql);
+            $stmt->bind_param("i", $userId);
+            $stmt->execute();
+            $stmt->close();
+
+            // Refresh page so the approved user disappears
+            header("Location: /admin/manage-requests");
+            exit;
         }
 
-        $users = [];
-        while ($row = $result->fetch_assoc()) {
-            $users[] = $row;
-        }
+        if ($action === 'reject') {
+            $deleteSql = "DELETE FROM users WHERE id = ?";
+            $stmt = $this->conn->prepare($deleteSql);
+            $stmt->bind_param("i", $userId);
+            $stmt->execute();
+            $stmt->close();
 
-        if (count($users) === 0) {
-            echo "<p>No pending user sign-up requests.</p>";
-            return;
-        }
-
-        foreach ($users as $user) {
-            echo '<div class="request-card">';
-            echo '<span>' . htmlspecialchars($user["username"] ?? $user["name"] ?? 'Unknown') . ' (' . htmlspecialchars($user['email']) . ')</span>';
-            echo '<div class="request-actions">';
-            echo '<a href="/admin/manage-requests?user_action=accept&user_id=' . $user['id'] . '"><button class="accept-btn">Accept</button></a>';
-            echo '<a href="/admin/manage-requests?user_action=reject&user_id=' . $user['id'] . '"><button class="reject-btn">Reject</button></a>';
-            echo '</div>';
-            echo '</div>';
+            header("Location: /admin/manage-requests");
+            exit;
         }
     }
+
+    // Now load only pending users
+    $sql = "SELECT id, name, email FROM users WHERE approved = 0";
+    $result = $this->conn->query($sql);
+    
+    if (!$result) {
+        echo "<p>Error loading user signup requests: " . htmlspecialchars($this->conn->error) . "</p>";
+        return;
+    }
+
+    $users = [];
+    while ($row = $result->fetch_assoc()) {
+        $users[] = $row;
+    }
+
+    if (count($users) === 0) {
+        echo "<p>No pending user sign-up requests.</p>";
+        return;
+    }
+
+    foreach ($users as $user) {
+        echo '<div class="request-card">';
+        echo '<span>' . htmlspecialchars($user["username"] ?? $user["name"] ?? "Unknown") 
+                . " (" . htmlspecialchars($user["email"]) . ')</span>';
+        echo '<div class="request-actions">';
+        echo '<a href="/admin/manage-requests?user_action=accept&user_id=' . $user['id'] . '"><button class="accept-btn">Accept</button></a>';
+        echo '<a href="/admin/manage-requests?user_action=reject&user_id=' . $user['id'] . '"><button class="reject-btn">Reject</button></a>';
+        echo '</div>';
+        echo '</div>';
+    }
+}
+
 
     // Display leave requests
     public function leaveRequests() {
