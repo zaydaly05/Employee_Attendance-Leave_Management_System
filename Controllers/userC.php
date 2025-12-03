@@ -26,7 +26,7 @@ class UserC {
             // Store the attempted email before redirection
             $_SESSION['old_email'] = htmlspecialchars($email);
             $_SESSION['flash'] = 'Email and password are required.';
-            header('Location: /');
+            header('Location: /EALMS/');
             exit;
         }
 
@@ -43,7 +43,7 @@ class UserC {
             unset($_SESSION['old_email']);
             // Regenerate session id to prevent fixation
             session_regenerate_id(true);
-            header('Location: /dashboard');
+            header('Location: /EALMS/dashboard');
             exit;
         }
 
@@ -51,7 +51,7 @@ class UserC {
         // Store the attempted email so the user doesn't have to re-type it
         $_SESSION['old_email'] = htmlspecialchars($email);
         $_SESSION['flash'] = 'Invalid email or password.';
-        header('Location: /');
+        header('Location: /EALMS/');
         exit;
     }
     private const ADMIN_SECRET_KEY = 'supersecretadmin123';
@@ -62,12 +62,14 @@ class UserC {
             echo 'Method Not Allowed';
             return;
         }
+        
 
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
         $confirmPassword = $_POST['confirmPassword'] ?? '';
         $role = $_POST['role'] ?? 'employee';
+
 
         if ($name === '' || $email === '' || $password === '') {
             $_SESSION['flash'] = 'Name, email and password are required.';
@@ -97,7 +99,9 @@ class UserC {
 
         if ($result['success']) {
             $_SESSION['flash'] = 'Registration successful! Please login.';
-            header('Location: /login');
+            $_SESSION['result'] = $result;
+            
+            header('Location: /EALMS/');
             exit;
         } else {
             $_SESSION['flash'] = $result['message'] ?? 'Registration failed.';

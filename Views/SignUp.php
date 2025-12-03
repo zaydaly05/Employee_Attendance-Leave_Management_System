@@ -80,11 +80,11 @@
         <input type="password" id="password" name="password" placeholder="Password" autocomplete="new-password" required value="<?php echo htmlspecialchars($_POST['password'] ?? ''); ?>"/>
         
         <label for="confirm-password">Confirm Password</label>
-        <input type="password" id="confirm-password" name="confirmPassword" placeholder="Confirm Password" autocomplete="new-password" required />
+        <input type="password" id="confirm-password" name="confirmPassword" placeholder="Confirm Password" autocomplete="new-password" required  value="<?php echo htmlspecialchars($_POST['confirmPassword'] ?? ''); ?>"/>
         <span id="password-error" style="color: red; font-size: 12px; display: none;">Passwords do not match</span>
 
         <label for="role">Role (Default: User)</label>
-        <input type="text" id="role-display" value="User" readonly class="form-control-plaintext mb-3" style="font-weight: bold;" />
+        <input type="text" id="role-display" value="User" readonly class="form-control-plaintext mb-3" style="font-weight: bold;" value="<?php echo htmlspecialchars($_POST['role'] ?? ''); ?>"/>
 
         <input type="hidden" name="role" id="actual-role-input" value="employee" />
 
@@ -99,7 +99,7 @@
           </div>
         </label> -->
 
-        <button type="button" class="btn-submit" onclick="window.location.href='<?php echo $base_url; ?>'; return false;">
+        <button type="submit" class="btn-submit">
           Submit
         </button>
       </form>

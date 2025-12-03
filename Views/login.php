@@ -24,7 +24,8 @@
     <!-- Right section -->
     <section class="right">
       <h2>Login</h2>
-      <form class="login-form" action="<?php echo $base_url; ?>auth/login" method="POST" novalidate>
+      
+      <form class="login-form" action="<?php echo $base_url; ?>auth/login" method="POST" validate>
         <label for="email">Email</label>
         <div class="input-group">
           <span class="input-icon" aria-hidden="true">📧</span>
@@ -46,7 +47,7 @@
           <a href="<?php echo $base_url; ?>reset-password" class="forgot-password">Forgot Password</a>
         </div>
 
-        <button type="button" onclick="window.location.href='<?php echo $base_url; ?>dashboard';" class="btn-login">Login</button>
+        <button type="submit"class="btn-login">Login</button>
       </form>
     </section>
   </div>

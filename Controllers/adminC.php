@@ -105,41 +105,48 @@ class adminC {
 
     // Handle managing requests (user signup and leave requests)
     public function handleManageRequests() {
-        // Handle user signup requests management
-        if (isset($_GET['user_action'], $_GET['user_id'])) {
-            $userAction = $_GET['user_action']; // accept or reject
-            $userId = (int) $_GET['user_id'];
+    // Check for POST data instead of GET
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_action'], $_POST['user_id'])) {
+        
+        $userAction = $_POST['user_action'];
+        $userId = (int) $_POST['user_id'];
 
-            if ($userAction === 'accept') {
-                $sql = "UPDATE users SET approved = 1 WHERE id = ?";
-                $stmt = $this->conn->prepare($sql);
-                if ($stmt) {
-                    $stmt->bind_param("i", $userId);
-                    if ($stmt->execute()) {
-                        $_SESSION['flash'] = 'User request accepted successfully!';
-                    } else {
-                        $_SESSION['flash'] = 'Error processing user request: ' . $stmt->error;
-                    }
+        if ($userAction === 'accept') {
+            $sql = "UPDATE users SET approved = 1 WHERE id = ?";
+            $stmt = $this->conn->prepare($sql);
+            if ($stmt) {
+                $stmt->bind_param("i", $userId);
+                if ($stmt->execute()) {
+                    $_SESSION['flash'] = 'User request accepted successfully!';
                 } else {
-                    $_SESSION['flash'] = 'Error preparing statement: ' . $this->conn->error;
+                    $_SESSION['flash'] = 'Error executing update: ' . $stmt->error;
                 }
-            } elseif ($userAction === 'reject') {
-                $sql = "DELETE FROM users WHERE id = ?";
-                $stmt = $this->conn->prepare($sql);
-                if ($stmt) {
-                    $stmt->bind_param("i", $userId);
-                    if ($stmt->execute()) {
-                        $_SESSION['flash'] = 'User request rejected.';
-                    } else {
-                        $_SESSION['flash'] = 'Error processing user request: ' . $stmt->error;
-                    }
-                } else {
-                    $_SESSION['flash'] = 'Error preparing statement: ' . $this->conn->error;
-                }
+                $stmt->close();
+            } else {
+                 $_SESSION['flash'] = 'Error preparing statement: ' . $this->conn->error;
             }
-            header("Location: /admin");
-            exit();
+
+        } elseif ($userAction === 'reject') {
+            $sql = "DELETE FROM users WHERE id = ?";
+            $stmt = $this->conn->prepare($sql);
+            if ($stmt) {
+                $stmt->bind_param("i", $userId);
+                if ($stmt->execute()) {
+                    $_SESSION['flash'] = 'User request rejected.';
+                } else {
+                    $_SESSION['flash'] = 'Error executing delete: ' . $stmt->error;
+                }
+                $stmt->close();
+            } else {
+                $_SESSION['flash'] = 'Error preparing statement: ' . $this->conn->error;
+            }
         }
+        
+        // Redirect back to admin panel
+        header("Location: /EALMS/admin");
+        exit();
+    }
+
 
         // Handle leave requests management
         if (isset($_GET['leave_action'], $_GET['leave_id'])) {
@@ -229,15 +236,30 @@ class adminC {
         return;
     }
 
-    foreach ($users as $user) {
+        foreach ($users as $user) {
         echo '<div class="request-card">';
+        // Use the name/email logic you already had
         echo '<span>' . htmlspecialchars($user["username"] ?? $user["name"] ?? "Unknown") 
                 . " (" . htmlspecialchars($user["email"]) . ')</span>';
+        
         echo '<div class="request-actions">';
-        echo '<a href="/admin/manage-requests?user_action=accept&user_id=' . $user['id'] . '"><button class="accept-btn">Accept</button></a>';
-        echo '<a href="/admin/manage-requests?user_action=reject&user_id=' . $user['id'] . '"><button class="reject-btn">Reject</button></a>';
-        echo '</div>';
-        echo '</div>';
+
+        // --- ACCEPT FORM ---
+        echo '<form action="/EALMS/admin/manage-requests" method="POST" style="display:inline;">';
+        echo '<input type="hidden" name="user_id" value="' . $user['id'] . '">';
+        echo '<input type="hidden" name="user_action" value="accept">';
+        echo '<button type="submit" class="accept-btn">Accept</button>';
+        echo '</form>';
+
+        // --- REJECT FORM ---
+        echo '<form action="/EALMS/admin/manage-requests" method="POST" style="display:inline;">';
+        echo '<input type="hidden" name="user_id" value="' . $user['id'] . '">';
+        echo '<input type="hidden" name="user_action" value="reject">';
+        echo '<button type="submit" class="reject-btn">Reject</button>';
+        echo '</form>';
+
+        echo '</div>'; // End request-actions
+        echo '</div>'; // End request-card
     }
 }
 
@@ -272,8 +294,8 @@ class adminC {
             echo '<em>Reason: ' . htmlspecialchars($request["reason"]) . '</em>';
             echo '</div>';
             echo '<div class="request-actions">';
-            echo '<a href="/admin/manage-requests?leave_action=accept&leave_id=' . $request['id'] . '"><button class="accept-btn">Accept</button></a>';
-            echo '<a href="/admin/manage-requests?leave_action=reject&leave_id=' . $request['id'] . '"><button class="reject-btn">Reject</button></a>';
+            echo '<a href="/EALMS/admin/manage-requests?leave_action=accept&leave_id=' . $request['id'] . '"><button class="accept-btn">Accept</button></a>';
+            echo '<a href="/EALMS/admin/manage-requests?leave_action=reject&leave_id=' . $request['id'] . '"><button class="reject-btn">Reject</button></a>';
             echo '</div>';
             echo '</div>';
         }

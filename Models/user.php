@@ -26,35 +26,41 @@ class User {
         
         return false;
     }
-   public function register($name, $email, $password, $role = 'User', $forAdminPassword, $approved = 0) {
-    
-    
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        public function register($name, $email, $password, $role = 'User', $forAdminPassword="101", $approved = 0) {
 
-    
-    $sql = "INSERT INTO {$this->table} (name, email, password, role, forAdminPassword, approved) VALUES (?, ?, ?, ?, ?, ?)";
-    $stmt = $this->conn->prepare($sql);
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    if($forAdminPassword !== 'Admin@123'){
-        $role = 'User';
-        return ["success" => false, "message" => "Invalid admin password for registration"];
-    }
-    else 
-        $role = 'Admin';
-    
-    if (!$stmt) {
-        return ["success" => false, "message" => "Prepare failed: " . $this->conn->error];
-    }
-    
-    $stmt->bind_param("ssss", $name, $email, $hashed_password, $role, $approved);
-    
-    if ($stmt->execute()) {
-        return ["success" => true, "message" => "User registered successfully", "id" => $stmt->insert_id];
-    } else {
-        
-        return ["success" => false, "message" => $stmt->error];
-    }
-}
+            // FIX 1 & 2: Updated column names to match the database image
+            $sql = "INSERT INTO {$this->table} 
+                    (name, email, password_hash, role, admin_password_hash, approved) 
+                    VALUES (?, ?, ?, ?, ?, ?)";
+
+            $stmt = $this->conn->prepare($sql);
+
+            if (!$stmt) {
+                return ["success" => false, "message" => "Prepare failed: " . $this->conn->error];
+            }
+
+            // Optional: If 'forAdminPassword' is meant to be a secure password, 
+            // it should also be hashed here before binding. 
+            // If it is just a plain text code, leave as is.
+            
+            $stmt->bind_param("sssssi", 
+                $name, 
+                $email, 
+                $hashed_password, 
+                $role,
+                $forAdminPassword, // This maps to admin_password_hash
+                $approved
+            );
+
+            if ($stmt->execute()) {
+                return ["success" => true, "message" => "User registered successfully", "id" => $stmt->insert_id];
+            } else {
+                return ["success" => false, "message" => $stmt->error];
+            }
+        }
+
 }
 
 ?>
