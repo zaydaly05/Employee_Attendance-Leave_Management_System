@@ -7,6 +7,8 @@
 <link rel="stylesheet" href="<?php echo $base_url; ?>Public/Css/User Dashboard.css" />
 </head>
 <body>
+
+
   <div class="container">
     <!-- Sidebar -->  
     <aside class="sidebar">

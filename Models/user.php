@@ -12,7 +12,7 @@ class User {
 
     public function login($email, $password) {
         // $sql = "SELECT * FROM {$this->table} WHERE email = ? and approved = 1 ";
-        $sql = "SELECT password_hash, email FROM {$this->table} WHERE email = ? AND approved = 1";
+        $sql = "SELECT * FROM {$this->table} WHERE email = ? AND approved = 1";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s", $email);
         $stmt->execute();

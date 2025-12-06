@@ -9,6 +9,8 @@ $view_path = __DIR__ . '/Views/';
 $controller_path = __DIR__ . '/Controllers/';
 $model_path = __DIR__ . '/Models/';
 
+
+
 // --- Calculate Base URL for Assets (CSS, JS, Images) ---
 // This ensures asset paths work correctly regardless of the route
 $script_name = dirname($_SERVER['SCRIPT_NAME']);
@@ -143,9 +145,9 @@ switch ($path_lower) {
         $userController->handleLogout();
         break;
 
-    case '/leave/request':
-        $leaveController->handleRequestLeave();
-        break;
+    // case '/leave/request':
+    //     $leaveController->handleRequestLeave();
+    //     break;
 
     case '/leave/summary':
         $leaveController->getLeaveSummary();
@@ -164,6 +166,9 @@ switch ($path_lower) {
         $adminController->handlePostAnnouncement();
         break;
     
+    case '/admin/post-celebration':
+        $adminController->  handlePostCelebration();
+        break;
     case '/admin/manage-requests':
         $adminController->handleManageRequests();
         break;

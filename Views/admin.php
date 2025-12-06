@@ -41,20 +41,21 @@
                 define('BASE_PATH', '/EALMS/'); 
                 // ... rest of your code to render the HTML ...
                 ?>
-
-            <!-- Announcement -->
-            <section id="announcements" class="post-section">
+                
+      <!-- Announcement -->
+            <section id="announcements" name="postAnnouncement" class="post-section">
                 <h2>Post Announcement</h2>
-                <form action="<?php echo BASE_PATH; ?> /admin/post-announcement" method="POST">
-                    <textarea name="announcement" placeholder="Type your announcement..." required></textarea>
-                    <button type="submit" onclick="handlePostAnnouncement()">Post Announcement</button>
+                <form action="<?php echo BASE_PATH; ?>admin/post-announcement" method="POST">
+                    <input type="hidden" name="postAnnouncement" value="1">
+                    <textarea name="announcement" placeholder="Type your announcement.." required><?php echo htmlspecialchars($_POST['announcement'] ?? ''); ?></textarea>
+                    <button type="submit">Post Announcement</button>
                 </form>
             </section>
 
             <!-- Celebration -->
             <section id="celeb" class="post-section">
                 <h2>Post Celebration</h2>
-                <form action="/admin/post-celebration" method="POST">
+                <form action="<?php echo $base_url; ?>/admin/post-celebration" method="POST">
                     <textarea name="celebration" placeholder="Write your celebration..." required></textarea>
                     <button type="submit">Post Celebration</button>
                 </form>
@@ -76,6 +77,7 @@
                     <?php 
                         if (!isset($adminController)) $adminController = new adminC();
                         $adminController->leaveRequests(); 
+                        
                     ?>
                 </section>
         </div>

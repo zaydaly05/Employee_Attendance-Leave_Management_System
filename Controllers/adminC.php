@@ -4,10 +4,11 @@
 
 require_once __DIR__ . '/../Models/dbConnect.php';
 require_once __DIR__ . '/../Models/user.php';
+require_once __DIR__ . '/../Models/announcements.php';
 
 if (!class_exists('adminC')) {
 class adminC {
-    
+
     private $userModel;
     private $conn;
 
@@ -18,62 +19,67 @@ class adminC {
     }
 
     // Handle posting announcement
-   public function handlePostAnnouncement() {
-    session_start();
 
+public function handlePostAnnouncement()
+{
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         http_response_code(405);
         echo 'Method Not Allowed';
         return;
     }
 
-    if (isset($_POST['postAnnouncement'])) {
+    session_start();
 
-        // Make sure user is logged in and is an admin
-        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-            $_SESSION['flash'] = "Only admins can post announcements.";
-            header("Location: /login");
-            exit();
-        }
-
-        $userId = $_SESSION['user_id'];  // normal user id
-
-        $announcement = trim($_POST['announcement'] ?? '');
-        if ($announcement !== '') {
-
-            $sql = "INSERT INTO announcements (message, created_by, created_at) 
-                    VALUES (?, ?, NOW())";
-
-            $stmt = $this->conn->prepare($sql);
-
-            if ($stmt) {
-                $stmt->bind_param("si", $announcement, $userId);
-
-                if ($stmt->execute()) {
-                    $_SESSION['flash'] = 'Announcement posted successfully!';
-                    header("Location: /admin");
-                    exit();
-                } else {
-                    $_SESSION['flash'] = 'Error posting announcement: ' . $stmt->error;
-                    header("Location: /admin");
-                    exit();
-                }
-            } else {
-                $_SESSION['flash'] = 'Error preparing statement: ' . $this->conn->error;
-                header("Location: /admin");
-                exit();
-            }
-
-        } else {
-            $_SESSION['flash'] = 'Announcement cannot be empty.';
-            header("Location: /admin");
-            exit();
-        }
+    if (!isset($_POST['postAnnouncement'])) {
+        $_SESSION['flash'] = 'Invalid form submission.';
+        header("Location: /EALMS/admin");
+        exit();
     }
 
+    if (!isset($_SESSION['user_id'])) {
+        $_SESSION['flash'] = "Only admins can post announcements.";
+        header("Location: /EALMS");
+        exit();
+    }
+
+    $userId = (int)$_SESSION['user_id'];
+    $announcement = trim($_POST['announcement'] ?? '');
+
+    if ($announcement === '') {
+        $_SESSION['flash'] = 'Announcement cannot be empty.';
+        header("Location: /EALMS/admin");
+        exit();
+    }
+
+    // SQL
+    $sql = "INSERT INTO announcements (message, created_by, created_at, status)
+            VALUES (?, ?, NOW(), 'active')";
+
+    $stmt = $this->conn->prepare($sql);
+
+    if (!$stmt) {
+        die("❌ SQL PREPARE FAILED: " . $this->conn->error);
+    }
+
+    if (!$stmt->bind_param("si", $announcement, $userId)) {
+        die("❌ BIND PARAM FAILED: " . $stmt->error);
+    }
+
+    if (!$stmt->execute()) {
+        die("❌ EXECUTE FAILED: " . $stmt->error);
+    }
+
+    $_SESSION['flash'] = 'Announcement posted successfully!';
+    header("Location: /EALMS/admin");
+    exit();
+}
+
+
+   
 
 
         // Handle posting celebration
+        public function handlePostCelebration() {
         if (isset($_POST['postCelebration'])) {
             $celebration = trim($_POST['celebration'] ?? '');
             if ($celebration !== '') {
@@ -154,7 +160,7 @@ class adminC {
             $leaveId = (int) $_GET['leave_id'];
 
             if ($leaveAction === 'accept') {
-                $sql = "UPDATE leave_requests SET status = 'approved' WHERE id = ?";
+                $sql = "UPDATE leaves SET status = 'Approved' WHERE id = ?";
                 $stmt = $this->conn->prepare($sql);
                 if ($stmt) {
                     $stmt->bind_param("i", $leaveId);
@@ -163,11 +169,12 @@ class adminC {
                     } else {
                         $_SESSION['flash'] = 'Error processing leave request: ' . $stmt->error;
                     }
+                    $stmt->close();
                 } else {
                     $_SESSION['flash'] = 'Error preparing statement: ' . $this->conn->error;
                 }
             } elseif ($leaveAction === 'reject') {
-                $sql = "UPDATE leave_requests SET status = 'rejected' WHERE id = ?";
+                $sql = "UPDATE leaves SET status = 'Rejected' WHERE id = ?";
                 $stmt = $this->conn->prepare($sql);
                 if ($stmt) {
                     $stmt->bind_param("i", $leaveId);
@@ -176,6 +183,7 @@ class adminC {
                     } else {
                         $_SESSION['flash'] = 'Error processing leave request: ' . $stmt->error;
                     }
+                    $stmt->close();
                 } else {
                     $_SESSION['flash'] = 'Error preparing statement: ' . $this->conn->error;
                 }
@@ -266,10 +274,9 @@ class adminC {
 
     // Display leave requests
     public function leaveRequests() {
-        $sql = "SELECT lr.id, u.name, lr.start_date, lr.end_date, lr.reason, lr.status 
-                FROM leaves as lr 
-                JOIN users u ON lr.id = u.id 
-                WHERE lr.status = 'pending'";
+        $sql = "SELECT l.id, l.start_date, l.end_date, l.leave_type, l.reason, l.status 
+                FROM leaves l 
+                WHERE l.status = 'Pending'";
         $result = $this->conn->query($sql);
         
         if (!$result) {
@@ -290,7 +297,10 @@ class adminC {
         foreach ($requests as $request) {
             echo '<div class="request-card">';
             echo '<div>';
-            echo '<span>' . htmlspecialchars($request["username"] ?? $request["name"] ?? 'Unknown') . '</span> requested leave from <strong>' . htmlspecialchars($request["start_date"]) . '</strong> to <strong>' . htmlspecialchars($request["end_date"]) . '</strong><br/>';
+            $leaveType = htmlspecialchars($request["leave_type"] ?? 'N/A');
+            $startDate = htmlspecialchars($request["start_date"]);
+            $endDate = htmlspecialchars($request["end_date"]);
+            echo 'Leave request (' . $leaveType . ') from <strong>' . $startDate . '</strong> to <strong>' . $endDate . '</strong><br/>';
             echo '<em>Reason: ' . htmlspecialchars($request["reason"]) . '</em>';
             echo '</div>';
             echo '<div class="request-actions">';

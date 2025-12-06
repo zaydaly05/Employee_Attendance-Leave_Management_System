@@ -15,10 +15,14 @@ class UserC {
     public function handleLogin() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
+                    $email = trim($_POST['email'] ?? '');
+        $password = $_POST['password'] ?? '';
+        echo $email;
+        echo $password;
             echo 'Method Not Allowed';
             return;
         }
-        
+
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
 
@@ -26,19 +30,26 @@ class UserC {
             // Store the attempted email before redirection
             $_SESSION['old_email'] = htmlspecialchars($email);
             $_SESSION['flash'] = 'Email and password are required.';
-            header('Location: /EALMS/');
+            header('Location: /EALMS/   ');
             exit;
         }
 
         $user = $this->userModel->login($email, $password);
 
         if ($user) {
+            echo "Login successful.";
+            echo "User ID: " . $user['id'];
+            echo "User Name: " . $user['name'];
+            echo "User Email: " . $user['email']; 
+            echo "User Role: " . $user['role'];
             // Authentication successful
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['name'] ?? '';
             $_SESSION['user_email'] = $user['email'] ?? '';
             $_SESSION['user_role'] = $user['role'] ?? 'user';
 
+            echo "Session User ID: " . $_SESSION['user_id'];
+            echo "Session User Name: " . $_SESSION['user_name'];
             // Clean up any failed login attempts' data
             unset($_SESSION['old_email']);
             // Regenerate session id to prevent fixation
@@ -46,6 +57,7 @@ class UserC {
             header('Location: /EALMS/dashboard');
             exit;
         }
+       
 
         // Authentication failed
         // Store the attempted email so the user doesn't have to re-type it
