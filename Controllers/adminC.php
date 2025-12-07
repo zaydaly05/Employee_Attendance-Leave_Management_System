@@ -5,6 +5,7 @@
 require_once __DIR__ . '/../Models/dbConnect.php';
 require_once __DIR__ . '/../Models/user.php';
 require_once __DIR__ . '/../Models/announcements.php';
+require_once __DIR__ . '/../Models/celebrations.php';
 
 if (!class_exists('adminC')) {
 class adminC {
@@ -20,8 +21,8 @@ class adminC {
 
     // Handle posting announcement
 
-public function handlePostAnnouncement()
-{
+    public function handlePostAnnouncement()
+    {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         http_response_code(405);
         echo 'Method Not Allowed';
@@ -72,41 +73,101 @@ public function handlePostAnnouncement()
     $_SESSION['flash'] = 'Announcement posted successfully!';
     header("Location: /EALMS/admin");
     exit();
-}
+    }
+    public function getAnnouncements()
+    {
+    // 1. Fetch announcements with existing query (no JOIN)
+    $sql = "SELECT message, created_at, created_by FROM announcements WHERE status = 'active' ORDER BY created_at DESC";
+    $result = $this->conn->query($sql);
+
+    $announcements = [];
+
+    if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            // 2. For each announcement, fetch admin name from users table
+            $adminId = (int)$row['created_by'];
+
+            $stmt = $this->conn->prepare("SELECT name FROM users WHERE id = ? AND role = 'admin' AND approved = 1 LIMIT 1");
+            $stmt->bind_param("i", $adminId);
+            $stmt->execute();
+            $adminResult = $stmt->get_result();
+
+            $adminName = "Unknown";
+
+            if ($adminResult && $adminResult->num_rows > 0) {
+                $adminRow = $adminResult->fetch_assoc();
+                $adminName = $adminRow['name'];
+            }
+
+            // Add admin name to the announcement
+            $row['admin_name'] = $adminName;
+
+            $announcements[] = $row;
+        }
+    }
+
+    return $announcements;
+    }
+
 
 
    
 
 
-        // Handle posting celebration
-        public function handlePostCelebration() {
-        if (isset($_POST['postCelebration'])) {
-            $celebration = trim($_POST['celebration'] ?? '');
-            if ($celebration !== '') {
-                $sql = "INSERT INTO celebrations (message, created_at) VALUES (?, NOW())";
-                $stmt = $this->conn->prepare($sql);
-                if ($stmt) {
-                    $stmt->bind_param("s", $celebration);
-                    if ($stmt->execute()) {
-                        $_SESSION['flash'] = 'Celebration posted successfully!';
-                        header("Location: /admin");
-                        exit();
-                    } else {
-                        $_SESSION['flash'] = 'Error posting celebration: ' . $stmt->error;
-                        header("Location: /admin");
-                        exit();
-                    }
-                } else {
-                    $_SESSION['flash'] = 'Error preparing statement: ' . $this->conn->error;
-                    header("Location: /admin");
-                    exit();
-                }
-            } else {
-                $_SESSION['flash'] = 'Celebration cannot be empty.';
-                header("Location: /admin");
-                exit();
-            }
-        }
+    // Handle posting celebration
+        
+    public function handlePostCelebration()
+    {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        echo 'Method Not Allowed';
+        return;
+    }
+
+    session_start();
+
+    if (!isset($_POST['postCelebration'])) {
+        $_SESSION['flash'] = 'Invalid form submission.';
+        header("Location: /EALMS/admin");
+        exit();
+    }
+
+    if (!isset($_SESSION['user_id'])) {
+        $_SESSION['flash'] = "Only admins can post celebrations.";
+        header("Location: /EALMS");
+        exit();
+    }
+
+    $userId = (int)$_SESSION['user_id'];
+    $celebration = trim($_POST['celebration'] ?? '');
+
+    if ($celebration === '') {
+        $_SESSION['flash'] = 'Celebration cannot be empty.';
+        header("Location: /EALMS/admin");
+        exit();
+    }
+
+    // SQL
+    $sql = "INSERT INTO celebrations (message, created_by, created_at, status)
+            VALUES (?, ?, NOW(), 'active')";
+
+    $stmt = $this->conn->prepare($sql);
+
+    if (!$stmt) {
+        die("❌ SQL PREPARE FAILED: " . $this->conn->error);
+    }
+
+    if (!$stmt->bind_param("si", $celebration, $userId)) {
+        die("❌ BIND PARAM FAILED: " . $stmt->error);
+    }
+
+    if (!$stmt->execute()) {
+        die("❌ EXECUTE FAILED: " . $stmt->error);
+    }
+
+    $_SESSION['flash'] = 'Celebration posted successfully!';
+    header("Location: /EALMS/admin");
+    exit();
     }
 
     // Handle managing requests (user signup and leave requests)
@@ -129,7 +190,7 @@ public function handlePostAnnouncement()
                 }
                 $stmt->close();
             } else {
-                 $_SESSION['flash'] = 'Error preparing statement: ' . $this->conn->error;
+                $_SESSION['flash'] = 'Error preparing statement: ' . $this->conn->error;
             }
 
         } elseif ($userAction === 'reject') {
@@ -194,7 +255,7 @@ public function handlePostAnnouncement()
     }
 
     // Display user signup requests
-   public function userSignupRequests() {
+    public function userSignupRequests() {
 
     // Handle accept/reject FIRST
     if (isset($_GET['user_action']) && isset($_GET['user_id'])) {
@@ -228,7 +289,7 @@ public function handlePostAnnouncement()
     // Now load only pending users
     $sql = "SELECT id, name, email FROM users WHERE approved = 0";
     $result = $this->conn->query($sql);
-    
+
     if (!$result) {
         echo "<p>Error loading user signup requests: " . htmlspecialchars($this->conn->error) . "</p>";
         return;
@@ -269,7 +330,7 @@ public function handlePostAnnouncement()
         echo '</div>'; // End request-actions
         echo '</div>'; // End request-card
     }
-}
+    }
 
 
     // Display leave requests
@@ -310,6 +371,12 @@ public function handlePostAnnouncement()
             echo '</div>';
         }
     }
+
+
+
+    
+
+
 }
 } // End of class_exists check
 ?>

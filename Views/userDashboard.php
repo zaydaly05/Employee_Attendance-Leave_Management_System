@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dashboard</title>
 <link rel="stylesheet" href="<?php echo $base_url; ?>Public/Css/User Dashboard.css" />
+
 </head>
 <body>
 
@@ -188,51 +189,46 @@
        
         <!-- Main sections in two columns -->
         <div class="section flex-row">
-          
-          <!-- Left side bigger -->
-           
           <div style="flex: 2 1 0;">
-            <!-- Announcements -->
-             <!-- <h3><u>Announcements</u></h3>
-             <br>
-            <section class="section announcements" aria-label="Announcements">
-              <div class="section-title">Announcements</div>
-              <div aria-hidden="true" class="announcements">
-                <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 2L2 12h20L12 2z"></path>
-                  <line x1="12" y1="8" x2="12" y2="13"></line>
-                  <circle cx="12" cy="17" r="1"></circle>
-                </svg>
-              </div>
-            </section> -->
               <h3><u>Announcements</u></h3>
               <br>
-            <section class="section announcements" aria-label="Announcements">
-            <div class="section-title">Announcements</div>
+                        <section class="section announcements" aria-label="Announcements">
+                  <div class="section-title"></div>
 
-              <div class="announcements">
-                  <?php if (!empty($announcements)): ?>
-                      <?php foreach ($announcements as $a): ?>
-                          <div class="announcement-item">
-                              <p><?= htmlspecialchars($a['message']) ?></p>
-                              <small>
-                                  Posted by: <?= htmlspecialchars($a['admin_name']) ?> |
-                                  <?= htmlspecialchars($a['created_at']) ?>
-                              </small>
-                          </div>
-                      <?php endforeach; ?>
-                  <?php else: ?>
-                      <!-- No announcements -->
-                      <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M12 2L2 12h20L12 2z"></path>
-                          <line x1="12" y1="8" x2="12" y2="13"></line>
-                          <circle cx="12" cy="17" r="1"></circle>
-                      </svg>
-                      <!-- <p>No announcements available.</p> -->
-                  <?php endif; ?>
-              </div>
-          </section>
-            <br>
+                  <div class="announcements" 
+                      style="min-height:10px; margin-left:-350px; flex-direction:column; gap:12px; 
+                            justify-content:flex-start; align-items:flex-start; text-align:left; padding:12px; 
+                            color:black; font-size:medium">
+
+                      <?php 
+                      $admin = new adminC();
+                      $announcements = $admin->getAnnouncements();
+
+                      if (!empty($announcements)): ?>
+                      
+                          <ul style="margin:0; padding-left:20px;">
+                              <?php foreach ($announcements as $a): ?>
+                                  <li class="announcement-message">
+                                      <?= nl2br(htmlspecialchars(strip_tags($a['message'], '<br>'))) ?>
+                                  </li>
+                              <?php endforeach; ?>
+                          </ul>
+
+                      <?php else: ?>
+
+                          <p style="font-size: 20px;">No announcements available.</p>
+                          <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M12 2L2 12h20L12 2z"></path>
+                              <line x1="12" y1="8" x2="12" y2="13"></line>
+                              <circle cx="12" cy="17" r="1"></circle>
+                          </svg>
+
+                      <?php endif; ?>
+
+                  </div>
+              </section>
+
+            
 
             <!-- Leave Request -->
             <section class="section leave-request" aria-label="Leave Request">

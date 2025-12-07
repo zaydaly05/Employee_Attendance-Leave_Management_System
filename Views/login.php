@@ -29,13 +29,13 @@
         <label for="email">Email</label>
         <div class="input-group">
           <span class="input-icon" aria-hidden="true">📧</span>
-          <input type="email" id="email" name="email" placeholder="Email" required autocomplete="email" value="<?php echo htmlspecialchars($GET['email'] ?? ''); ?>"/>
+          <input type="email" id="email" name="email" placeholder="Email" required autocomplete="email" value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>"/>
         </div>
 
         <label for="password">Password</label>
         <div class="input-group">
           <span class="input-icon" aria-hidden="true">🔒</span>
-          <input type="password" id="password" name="password" placeholder="Password" required autocomplete="current-password" value="<?php echo htmlspecialchars($GET['password'] ?? ''); ?>" />
+          <input type="password" id="password" name="password" placeholder="Password" required autocomplete="current-password" value="<?php echo htmlspecialchars($_POST['password'] ?? ''); ?>" />
         </div>
         <label for="remember-me">
         <input type="checkbox" id="remember-me" name="remember-me">

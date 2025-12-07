@@ -11,46 +11,46 @@ class LeaveC {
         $this->leaveModel = new Leave();
     }
 
-    // Handle leave request submission
-    // public function handleRequestLeave() {
-    //     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    //         http_response_code(405);
-    //         echo 'Method Not Allowed';
-    //         return;
-    //     }
+   // Handle leave request submission
+    public function handleRequestLeave() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo 'Method Not Allowed';
+            return;
+        }
 
-    //     // Check if user is logged in
-    //     if (!isset($_SESSION['user_id'])) {
-    //         $_SESSION['flash'] = 'Please login to request leave.';
-    //         header('Location: /login');
-    //         exit;
-    //     }
+        // Check if user is logged in
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['flash'] = 'Please login to request leave.';
+            header('Location: /login');
+            exit;
+        }
 
-    //     $employee_id = $_SESSION['user_id'] ?? null;
-    //     $employee_name = $_SESSION['user_name'] ?? 'Unknown';
-    //     $leave_type = $_POST['leave_type'] ?? '';
-    //     $start_date = $_POST['start_date'] ?? '';
-    //     $end_date = $_POST['end_date'] ?? '';
-    //     $reason = $_POST['reason'] ?? '';
+        $employee_id = $_SESSION['user_id'] ?? null;
+        $employee_name = $_SESSION['user_name'] ?? 'Unknown';
+        $leave_type = $_POST['leave_type'] ?? '';
+        $start_date = $_POST['start_date'] ?? '';
+        $end_date = $_POST['end_date'] ?? '';
+        $reason = $_POST['reason'] ?? '';
 
-    //     if ($leave_type === '' || $start_date === '' || $end_date === '') {
-    //         $_SESSION['flash'] = 'Please fill in all required fields.';
-    //         header('Location: /request-time-off');
-    //         exit;
-    //     }
+        if ($leave_type === '' || $start_date === '' || $end_date === '') {
+            $_SESSION['flash'] = 'Please fill in all required fields.';
+            header('Location: /request-time-off');
+            exit;
+        }
 
-    //     $result = $this->leaveModel->requestLeave($employee_id, $employee_name, $leave_type, $start_date, $end_date, $reason);
+        $result = $this->leaveModel->requestLeave($employee_id, $employee_name, $leave_type, $start_date, $end_date, $reason);
 
-    //     if ($result['success']) {
-    //         $_SESSION['flash'] = 'Leave request submitted successfully!';
-    //         header('Location: /request-time-off');
-    //         exit;
-    //     } else {
-    //         $_SESSION['flash'] = $result['message'] ?? 'Failed to submit leave request.';
-    //         header('Location: /request-time-off');
-    //         exit;
-    //     }
-    // }
+        if ($result['success']) {
+            $_SESSION['flash'] = 'Leave request submitted successfully!';
+            header('Location: /request-time-off');
+            exit;
+        } else {
+            $_SESSION['flash'] = $result['message'] ?? 'Failed to submit leave request.';
+            header('Location: /request-time-off');
+            exit;
+        }
+    }
 
     // Get leave summary for a user
     public function getLeaveSummary() {

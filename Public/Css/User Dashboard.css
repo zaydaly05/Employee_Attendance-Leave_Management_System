@@ -270,11 +270,15 @@
     /* Announcements */
     .announcements {
       height: 100px;
-      display: flex;
       justify-content: center;
       align-items: center;
       color: #bbb;
       font-size: 2rem;
+    }
+    .announcement-message {
+      font-size: 1rem;
+      color: #000000;
+      user-select: none;
     }
     /* Leave Request */
     .leave-request {

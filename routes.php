@@ -86,6 +86,7 @@ switch ($path_lower) {
         // TODO: Add security check here to make sure user is logged in
         $base_url = $base_url_for_views;
         require $view_path . 'userDashboard.php';
+
         break;
 
     case '/history':
@@ -175,6 +176,10 @@ switch ($path_lower) {
     case '/admin/leave-requests':
         $adminController->leaveRequests();
         break;
+    case '/dashboard':
+        $adminController->getAnnouncements();
+        break;
+    
 
     case '/admin/user-signup-requests':
         $adminController->userSignupRequests();

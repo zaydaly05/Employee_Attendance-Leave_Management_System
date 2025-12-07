@@ -16,7 +16,7 @@ class UserC {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
                     $email = trim($_POST['email'] ?? '');
-        $password = $_POST['password'] ?? '';
+            $password = $_POST['password'] ?? '';
         echo $email;
         echo $password;
             echo 'Method Not Allowed';
@@ -30,7 +30,7 @@ class UserC {
             // Store the attempted email before redirection
             $_SESSION['old_email'] = htmlspecialchars($email);
             $_SESSION['flash'] = 'Email and password are required.';
-            header('Location: /EALMS/   ');
+            header('Location: /EALMS/');
             exit;
         }
 

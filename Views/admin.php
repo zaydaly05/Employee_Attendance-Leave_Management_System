@@ -55,8 +55,9 @@
             <!-- Celebration -->
             <section id="celeb" class="post-section">
                 <h2>Post Celebration</h2>
-                <form action="<?php echo $base_url; ?>/admin/post-celebration" method="POST">
-                    <textarea name="celebration" placeholder="Write your celebration..." required></textarea>
+                <form action="<?php echo $base_url; ?>admin/post-celebration" method="POST" >
+                    <input type="hidden" name="postCelebration" value="1">
+                    <textarea name="celebration" placeholder="Write your celebration..." required><?php echo htmlspecialchars($_POST['celebration'] ?? ''); ?></textarea>
                     <button type="submit">Post Celebration</button>
                 </form>
             </section>
