@@ -3,12 +3,21 @@
 // This controller handles leave-related requests
 
 require_once __DIR__ . '/../Models/leave.php';
+require_once __DIR__ . '/../Models/dbConnect.php';
+require_once __DIR__ . '/../Models/user.php';
 
 class LeaveC {
     private $leaveModel;
+     private $conn;
 
+   
     public function __construct() {
         $this->leaveModel = new Leave();
+        $database = new Database();
+
+        $this->conn = $database->conn;
+        $this->userModel = new User();
+
     }
 
    // Handle leave request submission
@@ -64,6 +73,43 @@ class LeaveC {
         $summary = $this->leaveModel->getLeaveSummary($employee_id);
         header('Content-Type: application/json');
         echo json_encode($summary);
+    }
+
+
+
+       public function getLeaves()
+    {
+    // 1. Fetch leave requests with existing query (no JOIN)
+    $sql = "SELECT * FROM leaves";
+    $result = $this->conn->query($sql);
+
+    $leaveRequests = [];
+
+    if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            // 2. For each leave request, fetch user name from users table
+            $userId = (int)$row['id'];
+
+            $stmt = $this->conn->prepare("SELECT name FROM users WHERE id = ? AND role = 'user' AND approved = 1 LIMIT 1");
+            $stmt->bind_param("i", $userId);
+            $stmt->execute();
+            $userResult = $stmt->get_result();
+
+            $adminName = "Unknown";
+
+            if ($userResult && $userResult->num_rows > 0) {
+                $adminRow = $userResult->fetch_assoc();
+                $adminName = $adminRow['name'];
+            }
+
+            // Add admin name to the announcement
+            $row['admin_name'] = $adminName;
+
+            $leaveRequests[] = $row;
+        }
+    }
+
+    return $leaveRequests;
     }
 }
 ?>

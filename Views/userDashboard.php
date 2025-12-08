@@ -194,7 +194,7 @@
               <?php 
                 $admin = new adminC();
                 $announcements = $admin->getAnnouncements();
-                $expireAnnouncement = $admin->expireOldAnnouncements();
+                //$expireAnnouncement = $admin->expireOldAnnouncements();
                 
                 if (!function_exists('formatAnnouncementTime')) {
                   function formatAnnouncementTime($timestamp) {
@@ -259,19 +259,89 @@
             
 
             <!-- Leave Request -->
-            <section class="section leave-request" aria-label="Leave Request">
-              <div class="section-title" style="display:flex; align-items:center; gap:8px;">
-                Leave Request
-                <span style="font-size:0.9rem; font-weight: 600; cursor: default;" title="Info">ⓘ</span>
-              </div>
-              <div aria-hidden="true" class="leave-request">
-                <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="2" y1="22" x2="22" y2="2"></line>
-                  <line x1="7" y1="7" x2="12" y2="12"></line>
-                  <line x1="12" y1="12" x2="17" y2="17"></line>
-                </svg>
-              </div>
+            <section class="section leave-request-section" aria-label="Leave Request">
+                <div class="section-title leave-request-title">
+                    <span>Leave Request</span>
+                    <span class="info-icon" title="Info">ⓘ</span>
+                </div>
+
+                <?php
+                $leave = new leaveC();
+                $leaveRequests = $leave->getLeaves();
+                
+                if (!empty($leaveRequests)) : 
+                    // Helper function to format date
+                    if (!function_exists('formatLeaveDate')) {
+                        function formatLeaveDate($date) {
+                            $timestamp = strtotime($date);
+                            if (!$timestamp) return $date;
+                            return date('M j', $timestamp);
+                        }
+                    }
+                    
+                    // Helper function to calculate days
+                    if (!function_exists('calculateDays')) {
+                        function calculateDays($start, $end) {
+                            $startTime = strtotime($start);
+                            $endTime = strtotime($end);
+                            if (!$startTime || !$endTime) return '01';
+                            $diff = $endTime - $startTime;
+                            $days = floor($diff / (60 * 60 * 24)) + 1;
+                            return str_pad($days, 2, '0', STR_PAD_LEFT);
+                        }
+                    }
+                ?>
+                    <div class="leave-request-table">
+                        <div class="leave-request-header">
+                            <div class="leave-col-duration">Duration</div>
+                            <div class="leave-col-type">Type</div>
+                            <div class="leave-col-days">Days</div>
+                            <div class="leave-col-status">Status</div>
+                            <div class="leave-col-action"></div>
+                        </div>
+                        
+                        <?php foreach ($leaveRequests as $leaveReq) : 
+                            $duration = formatLeaveDate($leaveReq['start_date']) . ' - ' . formatLeaveDate($leaveReq['end_date']);
+                            $days = calculateDays($leaveReq['start_date'], $leaveReq['end_date']);
+                            $status = ucfirst(strtolower($leaveReq['status'] ?? 'Pending'));
+                            $statusClass = strtolower($status);
+                        ?>
+                            <div class="leave-request-row">
+                                <div class="leave-col-duration"><?= htmlspecialchars($duration) ?></div>
+                                <div class="leave-col-type"><?= htmlspecialchars($leaveReq['leave_type']) ?></div>
+                                <div class="leave-col-days"><?= $days ?></div>
+                                <div class="leave-col-status">
+                                    <span class="status-badge status-<?= $statusClass ?>">
+                                        <?php if ($statusClass === 'pending'): ?>
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <polyline points="12 6 12 12 16 14"></polyline>
+                                            </svg>
+                                        <?php elseif ($statusClass === 'approved'): ?>
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                        <?php endif; ?>
+                                        <?= htmlspecialchars($status) ?>
+                                    </span>
+                                </div>
+                                <div class="leave-col-action">
+                                    <a href="#" class="see-more-link">See More</a>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else : ?>
+                    <div aria-hidden="true" class="leave-request-empty">
+                        <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                          <line x1="2" y1="22" x2="22" y2="2"></line>
+                          <line x1="7" y1="7" x2="12" y2="12"></line>
+                          <line x1="12" y1="12" x2="17" y2="17"></line>
+                        </svg>
+                    </div>
+                <?php endif; ?>
             </section>
+
           </div>
 
           <!-- Right side small columns -->

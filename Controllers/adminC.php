@@ -109,6 +109,7 @@ class adminC {
     return $announcements;
     }
 
+        
     public function expireOldAnnouncements(){
     $sql = "UPDATE announcements
             SET status = 'inactive'
@@ -120,7 +121,7 @@ class adminC {
     }
 
 
-   
+ 
 
 
     // Handle posting celebration

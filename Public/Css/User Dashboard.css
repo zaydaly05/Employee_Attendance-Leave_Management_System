@@ -351,15 +351,120 @@
       color: #888;
     }
     /* Leave Request */
-    .leave-request {
-      height: 170px;
+    .leave-request-section {
+      padding: 0;
+    }
+    .leave-request-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      margin: 0;
+      border-bottom: 1px solid #e1e1e1;
+    }
+    .info-icon {
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: default;
+      color: #666;
+    }
+    .leave-request-table {
+      display: flex;
+      flex-direction: column;
+    }
+    .leave-request-header {
+      display: grid;
+      grid-template-columns: 2fr 1.5fr 0.8fr 1.2fr 1fr;
+      gap: 12px;
+      padding: 12px 16px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #444;
+      background: #fafafa;
+      border-bottom: 1px solid #e1e1e1;
+    }
+    .leave-request-row {
+      display: grid;
+      grid-template-columns: 2fr 1.5fr 0.8fr 1.2fr 1fr;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid #e1e1e1;
+      align-items: center;
+      transition: background-color 0.2s ease;
+    }
+    .leave-request-row:last-child {
+      border-bottom: none;
+    }
+    .leave-request-row:hover {
+      background-color: #f9f9f9;
+    }
+    .leave-col-duration,
+    .leave-col-type,
+    .leave-col-days,
+    .leave-col-status,
+    .leave-col-action {
+      font-size: 0.9rem;
+      color: #333;
+    }
+    .leave-col-duration {
+      font-weight: 500;
+    }
+    .leave-col-type {
+      color: #555;
+    }
+    .leave-col-days {
+      text-align: center;
+      font-weight: 600;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .status-badge svg {
+      width: 12px;
+      height: 12px;
+      stroke-width: 2.5;
+    }
+    .status-pending {
+      background-color: #9b7ed8;
+      color: white;
+    }
+    .status-approved {
+      background-color: #7ed859;
+      color: white;
+    }
+    .status-rejected {
+      background-color: #ff6b6b;
+      color: white;
+    }
+    .see-more-link {
+      color: #2a64d8;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .see-more-link:hover {
+      color: #1a4fb8;
+      text-decoration: underline;
+    }
+    .leave-request-empty {
       display: flex;
       justify-content: center;
       align-items: center;
+      height: 170px;
       color: #bbb;
-      font-size: 3rem;
-      cursor: default;
     }
+
+
+
+
     /* Placeholders icons from image */
     .placeholder-icon {
       width: 40px;
