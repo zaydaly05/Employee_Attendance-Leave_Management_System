@@ -194,6 +194,7 @@
               <?php 
                 $admin = new adminC();
                 $announcements = $admin->getAnnouncements();
+                $expireAnnouncement = $admin->expireOldAnnouncements();
                 
                 if (!function_exists('formatAnnouncementTime')) {
                   function formatAnnouncementTime($timestamp) {

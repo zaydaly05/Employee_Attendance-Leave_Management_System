@@ -109,6 +109,15 @@ class adminC {
     return $announcements;
     }
 
+    public function expireOldAnnouncements(){
+    $sql = "UPDATE announcements
+            SET status = 'inactive'
+            WHERE status = 'active'
+            AND created_at < DATE_SUB(NOW(), INTERVAL 24 HOUR)";
+    
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute();
+    }
 
 
    
