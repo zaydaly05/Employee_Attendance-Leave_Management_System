@@ -190,43 +190,70 @@
         <!-- Main sections in two columns -->
         <div class="section flex-row">
           <div style="flex: 2 1 0;">
-              <h3><u>Announcements</u></h3>
-              <br>
-                        <section class="section announcements" aria-label="Announcements">
-                  <div class="section-title"></div>
+              <section class="section announcements-section" aria-label="Announcements">
+              <?php 
+                $admin = new adminC();
+                $announcements = $admin->getAnnouncements();
+                
+                if (!function_exists('formatAnnouncementTime')) {
+                  function formatAnnouncementTime($timestamp) {
+                    $time = strtotime($timestamp);
+                    if (!$time) {
+                      return '';
+                    }
+                    $diff = time() - $time;
+                    if ($diff < 60) {
+                      return 'Just now';
+                    }
+                    if ($diff < 3600) {
+                      return floor($diff / 60) . ' min ago';
+                    }
+                    if ($diff < 86400) {
+                      return floor($diff / 3600) . ' hrs ago';
+                    }
+                    return date('M j - h:i A', $time);
+                  }
+                }
 
-                  <div class="announcements" 
-                      style="min-height:10px; margin-left:-350px; flex-direction:column; gap:12px; 
-                            justify-content:flex-start; align-items:flex-start; text-align:left; padding:12px; 
-                            color:black; font-size:medium">
+                $announcementCount = count($announcements);
+              ?>
 
-                      <?php 
-                      $admin = new adminC();
-                      $announcements = $admin->getAnnouncements();
+              <div class="section-title announcements-title">
+                <span>Announcements</span>
+                <span class="announcement-badge"><?= $announcementCount; ?> new</span>
+              </div>
 
-                      if (!empty($announcements)): ?>
-                      
-                          <ul style="margin:0; padding-left:20px;">
-                              <?php foreach ($announcements as $a): ?>
-                                  <li class="announcement-message">
-                                      <?= nl2br(htmlspecialchars(strip_tags($a['message'], '<br>'))) ?>
-                                  </li>
-                              <?php endforeach; ?>
-                          </ul>
-
-                      <?php else: ?>
-
-                          <p style="font-size: 20px;">No announcements available.</p>
-                          <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                              <path d="M12 2L2 12h20L12 2z"></path>
-                              <line x1="12" y1="8" x2="12" y2="13"></line>
-                              <circle cx="12" cy="17" r="1"></circle>
-                          </svg>
-
-                      <?php endif; ?>
-
-                  </div>
-              </section>
+              <?php if (!empty($announcements)): ?>
+                <div class="announcement-list">
+                  <?php foreach ($announcements as $a): ?>
+                    <article class="announcement-item">
+                      <div class="announcement-icon" aria-hidden="true">📢</div>
+                      <div class="announcement-content">
+                        <div class="announcement-text">
+                          <?= nl2br(htmlspecialchars(strip_tags($a['message'], '<br>'))) ?>
+                        </div>
+                        <div class="announcement-meta">
+                          <span><?= formatAnnouncementTime($a['created_at']); ?></span>
+                          <?php if (!empty($a['admin_name'])): ?>
+                            <span class="dot">•</span>
+                            <span>By <?= htmlspecialchars($a['admin_name']); ?></span>
+                          <?php endif; ?>
+                        </div>
+                      </div>
+                    </article>
+                  <?php endforeach; ?>
+                </div>
+              <?php else: ?>
+                <div class="announcement-empty">
+                  <p>No announcements available.</p>
+                  <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 12h20L12 2z"></path>
+                    <line x1="12" y1="8" x2="12" y2="13"></line>
+                    <circle cx="12" cy="17" r="1"></circle>
+                  </svg>
+                </div>
+              <?php endif; ?>
+            </section>
 
             
 
