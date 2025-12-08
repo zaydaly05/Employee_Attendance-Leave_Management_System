@@ -12,39 +12,71 @@ class AttendanceC {
     }
 
     // Handle marking attendance
-    public function handleMarkAttendance() {
+    public function handleMarkAttendance()
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            http_response_code(405);
-            header('Content-Type: application/json');
-            echo json_encode(["success" => false, "message" => "Method Not Allowed"]);
-            return;
+            return $this->jsonResponse(false, "Method Not Allowed", 405);
         }
 
-        // Check if user is logged in
         if (!isset($_SESSION['user_id'])) {
-            http_response_code(401);
-            header('Content-Type: application/json');
-            echo json_encode(["success" => false, "message" => "Unauthorized"]);
-            return;
+            return $this->jsonResponse(false, "Unauthorized", 401);
         }
 
-        $employee_id = $_SESSION['user_id'] ?? $_POST['employee_id'] ?? null;
+        $employee_id = $_SESSION['user_id']; 
         $status = $_POST['status'] ?? '';
         $date = $_POST['date'] ?? date('Y-m-d');
 
-        if ($employee_id === null || $status === '') {
-            header('Content-Type: application/json');
-            echo json_encode(["success" => false, "message" => "Missing required fields"]);
-            return;
+        if ($status === '') {
+            return $this->respond("Missing required fields", false);
         }
 
+        // ✅ Check if the user has already marked attendance today
+        if ($this->attendanceModel->hasMarkedToday($employee_id, $date)) {
+            return $this->respond("You have already marked attendance for today.", false);
+        }
+
+        // Mark attendance
         $result = $this->attendanceModel->markAttendance($employee_id, $status, $date);
-        
+
+        if ($result) {
+            return $this->respond("Attendance marked successfully", true);
+        } else {
+            return $this->respond("Failed to mark attendance", false);
+        }
+    }
+
+    /**
+     * Detect if request is AJAX or FORM and respond accordingly
+     */
+    private function respond(string $message, bool $success)
+    {
+        $isAjax = (
+            !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'
+        );
+
+        if ($isAjax) {
+            return $this->jsonResponse($success, $message);
+        }
+
+        // FORM POST → redirect and show flash message
+        $_SESSION['attendance_message'] = $message;
+        header("Location: /EALMS/dashboard"); // your dashboard page
+        exit;
+    }
+
+    /**
+     * Send JSON response
+     */
+    private function jsonResponse(bool $success, string $message, int $code = 200)
+    {
+        http_response_code($code);
         header('Content-Type: application/json');
         echo json_encode([
-            "success" => $result, 
-            "message" => $result ? "Attendance marked successfully" : "Failed to mark attendance"
+            "success" => $success,
+            "message" => $message
         ]);
+        exit;
     }
 
     // Get attendance history

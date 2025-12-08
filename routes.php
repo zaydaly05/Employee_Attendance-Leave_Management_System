@@ -176,9 +176,6 @@ switch ($path_lower) {
     case '/admin/leave-requests':
         $adminController->leaveRequests();
         break;
-    case '/dashboard':
-        $adminController->getAnnouncements();
-        break;
     
 
     case '/admin/user-signup-requests':

@@ -183,6 +183,8 @@
       box-shadow: 0 0 5px rgba(0,0,0,0.06);
       border: 1px solid #eee;
       min-width: 120px;
+      position: relative; /* enable positioning context */
+      padding-bottom: 2.5rem; 
     }
     .leave-card .title {
       font-size: 0.7rem;
@@ -199,6 +201,7 @@
     /* circle percentages */
     .leave-card svg {
       transform: rotate(-90deg);
+      
     }
     .leave-card circle {
       fill: none;
@@ -207,10 +210,12 @@
     }
     .leave-card .circle-bg circle {
       stroke: #eee;
+
     }
     /* colors for different leave types */
     .leave-card.casual .progress {
       stroke: #8b3ee5;
+      
     }
     .leave-card.sick .progress {
       stroke: #2ec2f9;
@@ -226,21 +231,27 @@
     }
     .leave-card .percent {
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top:75%;
+      left: 75%;
       transform: translate(-50%, -50%);
       font-weight: 700;
-      font-size: 0.8rem;
+      font-size: 1rem;
       user-select: none;
     }
-    .leave-card .details {
+   .leave-card .details {
+      position: absolute;
+      bottom: 0.5rem;   /* adjust vertical spacing */
+      right: 0.5rem;    /* adjust horizontal spacing */
       font-size: 0.7rem;
       color: #888;
       user-select: none;
+      text-align: right;
+      line-height: 1.2;
     }
     .leave-card .details span {
       display: block;
       line-height: 1.2;
+      
     }
 
     /* Section containers */

@@ -50,136 +50,102 @@
 
         </div>
 
-        <!-- Leave cards -->
-        <section class="leave-cards" aria-label="Leave Summary">
-          <article class="leave-card casual" aria-label="Casual Leave">
-            <div class="title">Casual Leave</div>
-            <div class="circle-bg">
-              <svg width="48" height="48" viewBox="0 0 36 36" aria-hidden="true" focusable="false">
-                <circle cx="18" cy="18" r="16" class="bg" />
-                <circle
-                  class="progress"
-                  cx="18"
-                  cy="18"
-                  r="16"
-                  stroke-dasharray="100, 100"
-                  stroke-dashoffset="10"
-                />
-              </svg>
-              <div class="percent" style="color:#8b3ee5;">90%</div>
-            </div>
-            <div class="details">
-              <span>Available - 05</span>
-              <span>Used - 02</span>
-            </div>
-          </article>
+            <!-- Leave cards -->
+          <?php
+    // Example dynamic leave data from your backend
+    $leaveTypes = [
+        ['name' => 'Casual Leave', 'available' => 0, 'used' => 5, 'color' => '#8b3ee5', 'class' => 'casual'],
+        ['name' => 'Sick Leave', 'available' => 5, 'used' => 2, 'color' => '#2ec2f9', 'class' => 'sick'],
+        ['name' => 'Earned Leave', 'available' => 6, 'used' => 6, 'color' => '#7ed859', 'class' => 'earned'],
+        ['name' => 'Unpaid Leave', 'available' => 6, 'used' => 6, 'color' => '#ff2e61', 'class' => 'unpaid'],
+        ['name' => 'Half Leave', 'available' => 6, 'used' => 6, 'color' => '#fcb63a', 'class' => 'half'],
+    ];
+    ?>
+      
+    <section class="leave-cards" aria-label="Leave Summary">
+        <?php foreach ($leaveTypes as $leave):
+            $total = $leave['available'] + $leave['used'];
+            $usedPercent = $total > 0 ? round(($leave['used'] / $total) * 100) : 0;
 
-          <article class="leave-card sick" aria-label="Sick Leave">
-            <div class="title">Sick Leave</div>
+            // SVG circle circumference is 100 units (for stroke-dasharray)
+            // stroke-dasharray = usedPercent, 100
+            // stroke-dashoffset is 100 - usedPercent for inverse fill effect
+            $strokeDashArray = "{$usedPercent}, 100";
+            $strokeDashOffset = 100 - $usedPercent;
+        ?>
+        <article class="leave-card <?= htmlspecialchars($leave['class']) ?>" aria-label="<?= htmlspecialchars($leave['name']) ?>">
+            <div class="title" style="font-size: 15px;"><?= htmlspecialchars($leave['name']) ?></div>
+            <br>
             <div class="circle-bg">
-              <svg width="48" height="48" viewBox="0 0 36 36" aria-hidden="true" focusable="false">
-                <circle cx="18" cy="18" r="16" class="bg" />
-                <circle
-                  class="progress"
-                  cx="18"
-                  cy="18"
-                  r="16"
-                  stroke-dasharray="70, 100"
-                  stroke-dashoffset="30"
-                />
-              </svg>
-              <div class="percent" style="color:#2ec2f9;">70%</div>
-            </div>
-            <div class="details">
-              <span>Available - 05</span>
-              <span>Used - 02</span>
-            </div>
-          </article>
+                  
+                <svg width="72" height="72" viewBox="0 0 54 54" aria-hidden="true" focusable="false">
+                    <circle cx="27" cy="27" r="24" class="bg" />
+                    <circle
+                        class="progress"
+                        cx="27"
+                        cy="27"
+                        r="24"
+                        stroke-dasharray="<?= $strokeDashArray ?>"
+                        stroke-dashoffset="<?= $strokeDashOffset ?>"
+                        style="stroke: <?= htmlspecialchars($leave['color']) ?>"
+                    />
+                </svg>
+                <div class="percent" style="color: <?= htmlspecialchars($leave['color']) ?>;">
+                    <?= $usedPercent ?>%
+                </div>
 
-          <article class="leave-card earned" aria-label="Earned Leave">
-            <div class="title">Earned Leave</div>
-            <div class="circle-bg">
-              <svg width="48" height="48" viewBox="0 0 36 36" aria-hidden="true" focusable="false">
-                <circle cx="18" cy="18" r="16" class="bg" />
-                <circle
-                  class="progress"
-                  cx="18"
-                  cy="18"
-                  r="16"
-                  stroke-dasharray="50, 100"
-                  stroke-dashoffset="50"
-                />
-              </svg>
-              <div class="percent" style="color:#7ed859;">50%</div>
+                <div class="percent" style="color: <?= htmlspecialchars($leave['color']) ?>;">
+                    <?= $usedPercent ?>%
+                </div>
             </div>
             <div class="details">
-              <span>Available - 06</span>
-              <span>Used - 06</span>
+                <span>Available - <?= htmlspecialchars($leave['available']) ?></span>
+                <span>Used - <?= htmlspecialchars($leave['used']) ?></span>
             </div>
-          </article>
+        </article>
+        <?php endforeach; ?>
+    </section>
 
-          <article class="leave-card unpaid" aria-label="Unpaid Leave">
-            <div class="title">Unpaid Leave</div>
-            <div class="circle-bg">
-              <svg width="48" height="48" viewBox="0 0 36 36" aria-hidden="true" focusable="false">
-                <circle cx="18" cy="18" r="16" class="bg" />
-                <circle
-                  class="progress"
-                  cx="18"
-                  cy="18"
-                  r="16"
-                  stroke-dasharray="10, 100"
-                  stroke-dashoffset="90"
-                />
-              </svg>
-              <div class="percent" style="color:#ff2e61;">10%</div>
-            </div>
-            <div class="details">
-              <span>Available - 06</span>
-              <span>Used - 06</span>
-            </div>
-          </article>
-
-          <article class="leave-card half" aria-label="Half Leave">
-            <div class="title">Half Leave</div>
-            <div class="circle-bg">
-              <svg width="48" height="48" viewBox="0 0 36 36" aria-hidden="true" focusable="false">
-                <circle cx="18" cy="18" r="16" class="bg" />
-                <circle
-                  class="progress"
-                  cx="18"
-                  cy="18"
-                  r="16"
-                  stroke-dasharray="20, 100"
-                  stroke-dashoffset="80"
-                />
-              </svg>
-              <div class="percent" style="color:#fcb63a;">20%</div>
-            </div>
-            <div class="details">
-              <span>Available - 06</span>
-              <span>Used - 06</span>
-            </div>
-          </article>
-        </section>
           <div class="attendance-container card">
             <div class="section flex-row">
               <div style="flex: 2 1 0;">
 
             <h3>Daily Attendance</h3>
             <br>
-            <form method="POST" action="">
+
+          <?php if (isset($_SESSION['attendance_message'])): ?>
+            <p class="attendance-message">
+             <?= htmlspecialchars($_SESSION['attendance_message']) ?>
+            </p>
+               <?php unset($_SESSION['attendance_message']); ?>
+          <?php endif; ?>
+
+
+            <form method="POST" action="<?php echo $base_url; ?>attendance/mark">
+
+                <!-- Required by controller -->
+                <input type="hidden" name="employee_id" value="<?php echo $_SESSION['user_id']; ?>">
+               
+
                 <label>
-                    <input type="radio" name="attendance" value="present" required> Present
+                    <input type="radio" name="status" value="present" required> Present
                 </label>
+
                 <label>
-                    <input type="radio" name="attendance" value="absent"> Absent
+                    <input type="radio" name="status" value="absent"> Absent
                 </label>
+
                 <label>
-                    <input type="radio" name="attendance" value="remote"> Remote
+                    <input type="radio" name="status" value="remote"> Remote
                 </label>
-                <button type="submit" class="btn-request" style="background-color: darkgreen;" name="mark_attendance">Mark Attendance</button>
+                <input type="hidden" name="date" value="<?php echo date('Y-m-d'); ?>">
+                <button type="submit" class="btn-request" style="background-color: darkgreen;" name="mark_attendance">
+                    Mark Attendance
+                </button>
+
             </form>
+
+
             <?php if(isset($attendance_message)): ?>
                 <p class="attendance-message"><?= htmlspecialchars($attendance_message) ?></p>
             <?php endif; ?>

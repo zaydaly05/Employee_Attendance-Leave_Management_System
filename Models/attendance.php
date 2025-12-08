@@ -10,11 +10,42 @@ class Attendance {
         $this->conn = $database->conn;
     }
 
-    public function markAttendance($employee_id, $status, $date) {
+   public function markAttendance($employee_id, $status, $date)
+    {
         $sql = "INSERT INTO {$this->table} (employee_id, date, status) VALUES (?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("iss", $employee_id, $date, $status);
         return $stmt->execute();
+    }
+
+    /**
+     * Check if the user has already marked attendance today
+     */
+    public function hasMarkedToday($employee_id, $date)
+    {
+        $sql = "SELECT COUNT(*) as count FROM {$this->table} WHERE employee_id = ? AND date = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("is", $employee_id, $date);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row['count'] > 0;
+    }
+
+    /**
+     * Get today’s attendance status (optional, for displaying in view)
+     */
+    public function getTodayStatus($employee_id, $date)
+    {
+        $sql = "SELECT status FROM {$this->table} WHERE employee_id = ? AND date = ? LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("is", $employee_id, $date);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($row = $result->fetch_assoc()) {
+            return $row['status'];
+        }
+        return null;
     }
 
     public function getAttendanceHistory($employee_id) {
