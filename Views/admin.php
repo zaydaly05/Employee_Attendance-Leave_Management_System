@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
     <script src="./Public/Js/animateNumber.js"></script>
+    <script>
+        // Pass base URL to JavaScript for fetch requests
+        window.BASE_URL = '<?php echo isset($base_url) ? $base_url : "/EALMS/"; ?>';
+    </script>
 
     <?php require_once './Controllers/adminC.php'; ?>
     

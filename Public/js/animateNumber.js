@@ -5,38 +5,39 @@
             celebrations: []
         };
 
-        function fetchDashboardData() {
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    const data = {
-                        totalUsers: 156,
-                        totalLeaves: 23,
-                        celebrations: [
-                            {
-                                name: "Ahmed Mohamed",
-                                type: "Birthday",
-                                date: "Nov 22, 2025"
-                            },
-                            {
-                                name: "Sara Hassan",
-                                type: "Work Anniversary",
-                                date: "Nov 25, 2025"
-                            },
-                            {
-                                name: "Mohamed Ali",
-                                type: "Birthday",
-                                date: "Nov 28, 2025"
-                            },
-                            {
-                                name: "Fatima Ibrahim",
-                                type: "Work Anniversary",
-                                date: "Dec 1, 2025"
-                            }
-                        ]
-                    };
-                    resolve(data);
-                }, 500);
-            });
+        async function fetchDashboardData() {
+            try {
+                // Use base URL if available, otherwise try relative path
+                const baseUrl = window.BASE_URL || '';
+                // Remove trailing slash if present, then add the path
+                const cleanBaseUrl = baseUrl.replace(/\/$/, '');
+                const apiUrl = cleanBaseUrl + '/Public/js/getUserCount.php';
+                
+                console.log('Fetching dashboard data from:', apiUrl);
+                
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch dashboard data: ' + response.status + ' ' + response.statusText);
+                }
+                const data = await response.json();
+                
+                // Check if there's an error in the response
+                if (data.error) {
+                    console.error('API Error:', data.error);
+                    throw new Error(data.error);
+                }
+                
+                console.log('Dashboard data received:', data);
+                return data;
+            } catch (error) {
+                console.error('Error fetching dashboard data:', error);
+                // Fallback to default values if fetch fails
+                return {
+                    totalUsers: 0,
+                    totalLeaves: 0,
+                    celebrations: []
+                };
+            }
         }
 
         function animateValue(element, start, end, duration) {
@@ -85,19 +86,27 @@
 
         async function refreshDashboard() {
             const btn = document.querySelector('.refresh-btn');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Refreshing...';
-            btn.disabled = true;
+            if (btn) {
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Refreshing...';
+                btn.disabled = true;
+            }
 
             const data = await fetchDashboardData();
             
-            updateTotalUsers(data.totalUsers);
-            updateTotalLeaves(data.totalLeaves);
-            updateCelebrations(data.celebrations);
+            // Ensure we have valid numbers
+            const totalUsers = parseInt(data.totalUsers) || 0;
+            const totalLeaves = parseInt(data.totalLeaves) || 0;
+            
+            updateTotalUsers(totalUsers);
+            updateTotalLeaves(totalLeaves);
+            updateCelebrations(data.celebrations || []);
 
             dashboardData = data;
 
-            btn.innerHTML = '<i class="fas fa-sync-alt"></i>Refresh Data';
-            btn.disabled = false;
+            if (btn) {
+                btn.innerHTML = '<i class="fas fa-sync-alt"></i>Refresh Data';
+                btn.disabled = false;
+            }
         }
 
         window.addEventListener('DOMContentLoaded', () => {
