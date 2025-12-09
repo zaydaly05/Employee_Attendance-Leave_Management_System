@@ -55,29 +55,48 @@
 
         function updateTotalUsers(count) {
             const element = document.getElementById('totalUsers');
-            animateValue(element, 0, count, 1000);
+            if (element) {
+                animateValue(element, 0, count, 1000);
+            }
         }
 
         function updateTotalLeaves(count) {
             const element = document.getElementById('totalLeaves');
-            animateValue(element, 0, count, 1000);
+            if (element) {
+                animateValue(element, 0, count, 1000);
+            }
         }
 
         function updateCelebrations(celebrations) {
             const listElement = document.getElementById('celebrationList');
             
-            if (celebrations.length === 0) {
+            if (!listElement) {
+                console.warn('Celebration list element not found');
+                return;
+            }
+            
+            if (!celebrations || celebrations.length === 0) {
                 listElement.innerHTML = '<p class="card-description">No upcoming celebrations</p>';
                 return;
             }
 
             let html = '';
             celebrations.forEach(celebration => {
+                // Sanitize and ensure we have valid data
+                const name = celebration.name || 'Unknown';
+                const type = celebration.type || 'Reminder';
+                const date = celebration.date || 'TBD';
+                
+                // Escape HTML to prevent XSS
+                const safeName = name.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                const safeType = type.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                const safeDate = date.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                
                 html += `
                     <div class="celebration-item">
-                        <div class="celebration-name">${celebration.name}</div>
-                        <div class="celebration-date"><i class="fas fa-calendar"></i> ${celebration.date}</div>
-                        <span class="celebration-type">${celebration.type}</span>
+                        <div class="celebration-name">${safeName}</div>
+                        <div class="celebration-date"><i class="fas fa-calendar"></i> ${safeDate}</div>
+                        <span class="celebration-type">${safeType}</span>
                     </div>
                 `;
             });
@@ -99,7 +118,8 @@
             
             updateTotalUsers(totalUsers);
             updateTotalLeaves(totalLeaves);
-            updateCelebrations(data.celebrations || []);
+            // Celebrations are now loaded via PHP, so we don't update them via JavaScript
+            // updateCelebrations(data.celebrations || []);
 
             dashboardData = data;
 

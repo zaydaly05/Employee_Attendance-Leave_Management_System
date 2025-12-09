@@ -546,3 +546,63 @@
     font-weight: 600;
     color: green;
 }
+
+/* Celebration Reminders for User Dashboard - Matching Admin Style */
+.celebration-reminders-list-user {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.celebration-item-user {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-left: 4px solid #007bff;
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.celebration-item-user:hover {
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.celebration-item-user:last-child {
+    margin-bottom: 0;
+}
+
+.celebration-name-user {
+    color: #000000;
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 4px;
+}
+
+.celebration-date-user {
+    color: #666666;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.celebration-date-user i {
+    color: #999;
+    font-size: 12px;
+}
+
+.celebration-type-user {
+    display: inline-block;
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-top: 4px;
+}

@@ -13,6 +13,11 @@ class UserC {
 
     // Handle login request
     public function handleLogin() {
+        // Ensure session is started
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
                     $email = trim($_POST['email'] ?? '');
@@ -44,7 +49,7 @@ class UserC {
             echo "User Role: " . $user['role'];
             // Authentication successful
             $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_name'] = $user['name'] ?? '';
+            $_SESSION['user_name'] = $user['name'] ?? ($user['username'] ?? 'User');
             $_SESSION['user_email'] = $user['email'] ?? '';
             $_SESSION['user_role'] = $user['role'] ?? 'user';
 
@@ -69,6 +74,11 @@ class UserC {
     private const ADMIN_SECRET_KEY = 'supersecretadmin123';
     // Handle signup/registration request
     public function handleSignup() {
+        // Ensure session is started
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
             echo 'Method Not Allowed';

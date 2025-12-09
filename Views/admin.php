@@ -58,11 +58,28 @@
 
             <!-- Celebration -->
             <section id="celeb" class="post-section">
-                <h2>Post Celebration</h2>
+                <h2>Add Celebration Reminder</h2>
                 <form action="<?php echo $base_url; ?>admin/post-celebration" method="POST" >
                     <input type="hidden" name="postCelebration" value="1">
-                    <textarea name="celebration" placeholder="Write your celebration..." required><?php echo htmlspecialchars($_POST['celebration'] ?? ''); ?></textarea>
-                    <button type="submit">Post Celebration</button>
+                    
+                    <label for="celebration_name">Name *</label>
+                    <input type="text" id="celebration_name" name="celebration_name" placeholder="Enter person's name" required value="<?php echo htmlspecialchars($_POST['celebration_name'] ?? ''); ?>">
+                    
+                    <label for="celebration_type">Type *</label>
+                    <select id="celebration_type" name="celebration_type" required>
+                        <option value="">Select type</option>
+                        <option value="Birthday" <?php echo (isset($_POST['celebration_type']) && $_POST['celebration_type'] === 'Birthday') ? 'selected' : ''; ?>>Birthday</option>
+                        <option value="Work Anniversary" <?php echo (isset($_POST['celebration_type']) && $_POST['celebration_type'] === 'Work Anniversary') ? 'selected' : ''; ?>>Work Anniversary</option>
+                        <option value="Other" <?php echo (isset($_POST['celebration_type']) && $_POST['celebration_type'] === 'Other') ? 'selected' : ''; ?>>Other</option>
+                    </select>
+                    
+                    <label for="celebration_date">Date *</label>
+                    <input type="date" id="celebration_date" name="celebration_date" required value="<?php echo htmlspecialchars($_POST['celebration_date'] ?? ''); ?>">
+                    <br>
+                    <br>
+                    <textarea id="celebration_message" name="celebration_message" placeholder="Additional message or note..."><?php echo htmlspecialchars($_POST['celebration_message'] ?? ''); ?></textarea>
+                    
+                    <button type="submit">Add Celebration Reminder</button>
                 </form>
             </section>
             
@@ -118,7 +135,45 @@
                         <div class="card-icon"><i class="fas fa-birthday-cake"></i></div>
                     </div>
                     <div id="celebrationList">
-                        <div class="loading">Loading...</div>
+                        <?php 
+                            if (!isset($adminController)) $adminController = new adminC();
+                            $celebrations = $adminController->getCelebrationReminders();
+                            
+                            if (empty($celebrations)) {
+                                echo '<p class="card-description">No upcoming celebrations</p>';
+                            } else {
+                                echo '<div class="celebration-reminders-list">';
+                                foreach ($celebrations as $celebration) {
+                                    $name = htmlspecialchars($celebration['name'] ?? 'Unknown');
+                                    $type = htmlspecialchars($celebration['type'] ?? 'Reminder');
+                                    $date = $celebration['date'] ?? '';
+                                    
+                                    // Format date to match image format (e.g., "Nov 22, 2025")
+                                    $formattedDate = '';
+                                    if ($date) {
+                                        try {
+                                            $dateObj = new DateTime($date);
+                                            $formattedDate = $dateObj->format('M d, Y');
+                                        } catch (Exception $e) {
+                                            // Try alternative format
+                                            $dateObj = DateTime::createFromFormat('Y-m-d', $date);
+                                            if ($dateObj) {
+                                                $formattedDate = $dateObj->format('M d, Y');
+                                            } else {
+                                                $formattedDate = $date;
+                                            }
+                                        }
+                                    }
+                                    
+                                    echo '<div class="celebration-item">';
+                                    echo '<div class="celebration-name">' . $name . '</div>';
+                                    echo '<div class="celebration-date"><i class="fas fa-calendar"></i> ' . $formattedDate . '</div>';
+                                    echo '<span class="celebration-type">' . $type . '</span>';
+                                    echo '</div>';
+                                }
+                                echo '</div>';
+                            }
+                        ?>
                     </div>
                 </div>
 

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dashboard</title>
 <link rel="stylesheet" href="<?php echo $base_url; ?>Public/Css/User Dashboard.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
 </head>
 <body>
@@ -41,7 +42,7 @@
         <!-- Welcome and Request Time Off button -->
         <div style="display:flex; align-items:center; gap: 12px; margin-bottom: 12px; flex-wrap:wrap;">
      
-          <div class="welcome">Welcome back, <?php echo htmlspecialchars($_SESSION['user_name']); ?> <span class="wave" aria-label="waving hand" role="img">👋</span></div>
+          <div class="welcome">Welcome back, <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'User'); ?> <span class="wave" aria-label="waving hand" role="img">👋</span></div>
           
           <a href="<?php echo $base_url; ?>request-time-off" class="btn-request" aria-label="Request Time Off" role="button">
             <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -332,13 +333,51 @@
             <!-- Celebrations this month -->
             <section class="section celebrations" aria-label="Celebrations this month">
               <div class="section-title">Celebrations this month</div>
-              <div aria-hidden="true" style="text-align:center; padding-top: 30px;">
-                <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="#c9c9c9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                  <line x1="9" y1="9" x2="15" y2="15"></line>
-                  <line x1="15" y1="9" x2="9" y2="15"></line>
-                </svg>
-              </div>
+              <?php 
+                if (!isset($admin)) $admin = new adminC();
+                $celebrations = $admin->getCelebrationReminders();
+                
+                if (empty($celebrations)) {
+                  echo '<div aria-hidden="true" style="text-align:center; padding-top: 30px;">';
+                  echo '<svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="#c9c9c9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">';
+                  echo '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>';
+                  echo '<line x1="9" y1="9" x2="15" y2="15"></line>';
+                  echo '<line x1="15" y1="9" x2="9" y2="15"></line>';
+                  echo '</svg>';
+                  echo '<p style="color: #999; margin-top: 10px; font-size: 14px;">No upcoming celebrations</p>';
+                  echo '</div>';
+                } else {
+                  echo '<div class="celebration-reminders-list-user">';
+                  foreach ($celebrations as $celebration) {
+                    $name = htmlspecialchars($celebration['name'] ?? 'Unknown');
+                    $type = htmlspecialchars($celebration['type'] ?? 'Reminder');
+                    $date = $celebration['date'] ?? '';
+                    
+                    // Format date to match format (e.g., "Nov 22, 2025")
+                    $formattedDate = '';
+                    if ($date) {
+                      try {
+                        $dateObj = new DateTime($date);
+                        $formattedDate = $dateObj->format('M d, Y');
+                      } catch (Exception $e) {
+                        $dateObj = DateTime::createFromFormat('Y-m-d', $date);
+                        if ($dateObj) {
+                          $formattedDate = $dateObj->format('M d, Y');
+                        } else {
+                          $formattedDate = $date;
+                        }
+                      }
+                    }
+                    
+                    echo '<div class="celebration-item-user">';
+                    echo '<div class="celebration-name-user">' . $name . '</div>';
+                    echo '<div class="celebration-date-user"><i class="fas fa-calendar"></i> ' . $formattedDate . '</div>';
+                    echo '<span class="celebration-type-user">' . $type . '</span>';
+                    echo '</div>';
+                  }
+                  echo '</div>';
+                }
+              ?>
             </section>
           </div>
         </div>
