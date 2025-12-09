@@ -40,7 +40,8 @@
       <main class="content" role="main">
         <!-- Welcome and Request Time Off button -->
         <div style="display:flex; align-items:center; gap: 12px; margin-bottom: 12px; flex-wrap:wrap;">
-          <div class="welcome">Welcome back, Zayd <span class="wave" aria-label="waving hand" role="img">👋</span></div>
+     
+          <div class="welcome">Welcome back, <?php echo htmlspecialchars($_SESSION['user_name']); ?> <span class="wave" aria-label="waving hand" role="img">👋</span></div>
           
           <a href="<?php echo $base_url; ?>request-time-off" class="btn-request" aria-label="Request Time Off" role="button">
             <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -50,61 +51,57 @@
 
         </div>
 
-            <!-- Leave cards -->
-          <?php
-    // Example dynamic leave data from your backend
-    $leaveTypes = [
-        ['name' => 'Casual Leave', 'available' => 0, 'used' => 5, 'color' => '#8b3ee5', 'class' => 'casual'],
-        ['name' => 'Sick Leave', 'available' => 5, 'used' => 2, 'color' => '#2ec2f9', 'class' => 'sick'],
-        ['name' => 'Earned Leave', 'available' => 6, 'used' => 6, 'color' => '#7ed859', 'class' => 'earned'],
-        ['name' => 'Unpaid Leave', 'available' => 6, 'used' => 6, 'color' => '#ff2e61', 'class' => 'unpaid'],
-        ['name' => 'Half Leave', 'available' => 6, 'used' => 6, 'color' => '#fcb63a', 'class' => 'half'],
-    ];
-    ?>
-      
-    <section class="leave-cards" aria-label="Leave Summary">
-        <?php foreach ($leaveTypes as $leave):
-            $total = $leave['available'] + $leave['used'];
-            $usedPercent = $total > 0 ? round(($leave['used'] / $total) * 100) : 0;
-
-            // SVG circle circumference is 100 units (for stroke-dasharray)
-            // stroke-dasharray = usedPercent, 100
-            // stroke-dashoffset is 100 - usedPercent for inverse fill effect
-            $strokeDashArray = "{$usedPercent}, 100";
-            $strokeDashOffset = 100 - $usedPercent;
+          <!-- Leave cards -->
+        <?php
+        // Example dynamic leave data from your backend
+        $leaveTypes = [
+            ['name' => 'Casual Leave', 'available' => 3, 'used' => 5, 'color' => '#8b3ee5', 'class' => 'casual'],
+            ['name' => 'Sick Leave', 'available' => 3, 'used' => 2, 'color' => '#2ec2f9', 'class' => 'sick'],
+            ['name' => 'Earned Leave', 'available' => 6, 'used' => 6, 'color' => '#7ed859', 'class' => 'earned'],
+            ['name' => 'Unpaid Leave', 'available' => 5, 'used' => 6, 'color' => '#ff2e61', 'class' => 'unpaid'],
+            ['name' => 'Half Leave', 'available' => 6, 'used' => 6, 'color' => '#fcb63a', 'class' => 'half'],
+        ];
         ?>
-        <article class="leave-card <?= htmlspecialchars($leave['class']) ?>" aria-label="<?= htmlspecialchars($leave['name']) ?>">
-            <div class="title" style="font-size: 15px;"><?= htmlspecialchars($leave['name']) ?></div>
-            <br>
-            <div class="circle-bg">
-                  
-                <svg width="72" height="72" viewBox="0 0 54 54" aria-hidden="true" focusable="false">
-                    <circle cx="27" cy="27" r="24" class="bg" />
-                    <circle
-                        class="progress"
-                        cx="27"
-                        cy="27"
-                        r="24"
-                        stroke-dasharray="<?= $strokeDashArray ?>"
-                        stroke-dashoffset="<?= $strokeDashOffset ?>"
-                        style="stroke: <?= htmlspecialchars($leave['color']) ?>"
-                    />
-                </svg>
-                <div class="percent" style="color: <?= htmlspecialchars($leave['color']) ?>;">
-                    <?= $usedPercent ?>%
-                </div>
 
-                <div class="percent" style="color: <?= htmlspecialchars($leave['color']) ?>;">
-                    <?= $usedPercent ?>%
+        <section class="leave-cards" aria-label="Leave Summary">
+            <?php foreach ($leaveTypes as $leave):
+                $total = $leave['available'] + $leave['used'];
+                $usedPercent = $total > 0 ? round(($leave['used'] / $total) * 100) : 0;
+
+                // Correct SVG math
+                $radius = 24;
+                $circumference = 2 * M_PI * $radius;
+                $strokeDashArray = $circumference;
+                $strokeDashOffset = $circumference * (1 - $usedPercent / 100);
+            ?>
+            <article class="leave-card <?= htmlspecialchars($leave['class']) ?>" aria-label="<?= htmlspecialchars($leave['name']) ?>">
+                <div class="title" style="font-size: 15px;"><?= htmlspecialchars($leave['name']) ?></div>
+                <br>
+                <div class="circle-bg">
+                    <svg width="72" height="72" viewBox="0 0 54 54" aria-hidden="true" focusable="false">
+                        <circle cx="27" cy="27" r="24" class="bg" />
+                        <circle
+                            class="progress"
+                            cx="27"
+                            cy="27"
+                            r="24"
+                            transform="rotate(-90 27 27)"
+                            stroke-dasharray="<?= $strokeDashArray ?>"
+                            stroke-dashoffset="<?= $strokeDashOffset ?>"
+                            style="stroke: <?= htmlspecialchars($leave['color']) ?>;"
+                        />
+                    </svg>
+                    <div class="percent" style="color: <?= htmlspecialchars($leave['color']) ?>;">
+                        <?= $usedPercent ?>%
+                    </div>
                 </div>
-            </div>
-            <div class="details">
-                <span>Available - <?= htmlspecialchars($leave['available']) ?></span>
-                <span>Used - <?= htmlspecialchars($leave['used']) ?></span>
-            </div>
-        </article>
-        <?php endforeach; ?>
-    </section>
+                <div class="details">
+                    <span>Available - <?= htmlspecialchars($leave['available']) ?></span>
+                    <span>Used - <?= htmlspecialchars($leave['used']) ?></span>
+                </div>
+            </article>
+            <?php endforeach; ?>
+        </section>
 
           <div class="attendance-container card">
             <div class="section flex-row">

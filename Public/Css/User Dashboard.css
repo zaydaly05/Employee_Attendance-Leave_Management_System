@@ -200,7 +200,7 @@
     }
     /* circle percentages */
     .leave-card svg {
-      transform: rotate(-90deg);
+      transform: rotate(-180deg);
       
     }
     .leave-card circle {
