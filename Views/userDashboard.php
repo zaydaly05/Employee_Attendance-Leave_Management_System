@@ -157,8 +157,8 @@
               <section class="section announcements-section" aria-label="Announcements">
               <?php 
                 $admin = new adminC();
+                $admin->expireOldAnnouncements();
                 $announcements = $admin->getAnnouncements();
-                //$expireAnnouncement = $admin->expireOldAnnouncements();
                 
                 if (!function_exists('formatAnnouncementTime')) {
                   function formatAnnouncementTime($timestamp) {
@@ -167,7 +167,7 @@
                       return '';
                     }
                     $diff = time() - $time;
-                    if ($diff < 60) {
+                    if ($diff < 20) {
                       return 'Just now';
                     }
                     if ($diff < 3600) {
