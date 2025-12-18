@@ -75,8 +75,7 @@
                     
                     <label for="celebration_date">Date *</label>
                     <input type="date" id="celebration_date" name="celebration_date" required value="<?php echo htmlspecialchars($_POST['celebration_date'] ?? ''); ?>">
-                    <br>
-                    <br>
+                    
                     <textarea id="celebration_message" name="celebration_message" placeholder="Additional message or note..."><?php echo htmlspecialchars($_POST['celebration_message'] ?? ''); ?></textarea>
                     
                     <button type="submit">Add Celebration Reminder</button>

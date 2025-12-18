@@ -135,7 +135,7 @@ class adminC {
     }
 
     if (session_status() === PHP_SESSION_NONE) {
-        session_start();
+    session_start();
     }
 
     if (!isset($_POST['postCelebration'])) {
@@ -212,14 +212,14 @@ class adminC {
             $message .= "|$celebrationMessage";
         }
         
-        $sql = "INSERT INTO celebrations (message, created_by, created_at, status)
-                VALUES (?, ?, NOW(), 'active')";
-        
-        $stmt = $this->conn->prepare($sql);
-        if (!$stmt) {
-            die("❌ SQL PREPARE FAILED: " . $this->conn->error);
-        }
-        
+    $sql = "INSERT INTO celebrations (message, created_by, created_at, status)
+            VALUES (?, ?, NOW(), 'active')";
+
+    $stmt = $this->conn->prepare($sql);
+    if (!$stmt) {
+        die("❌ SQL PREPARE FAILED: " . $this->conn->error);
+    }
+
         $stmt->bind_param("si", $message, $userId);
     }
 

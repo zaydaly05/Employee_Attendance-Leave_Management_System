@@ -58,6 +58,11 @@ echo "<!-- Debug: Path = " . htmlspecialchars($path) . " | REQUEST_URI = " . htm
 // Path is already converted to lowercase in index.php, but ensure it's lowercase here too
 $path_lower = strtolower($path);
 
+// Start session for all routes
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 switch ($path_lower) {
 
     case '/':
@@ -73,6 +78,7 @@ switch ($path_lower) {
 
     case '/signup':
         $base_url = $base_url_for_views;
+        
         require $view_path . 'SignUp.php';
         break;
 
@@ -83,39 +89,76 @@ switch ($path_lower) {
         break;
 
     case '/dashboard':
-        // TODO: Add security check here to make sure user is logged in
+        // Check if user is logged in
         $base_url = $base_url_for_views;
-        require $view_path . 'userDashboard.php';
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /EALMS/');
+            exit;
+        }
+        elseif($_SESSION['user_role'] == 'admin'){
+            header('Location: /EALMS/admin');
+            exit;
+        }
+        else{
+        require $view_path . 'userDashboard.php';}
 
         break;
 
     case '/history':
-        // TODO: Add security check
+        // Check if user is logged in
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /EALMS/');
+            exit;
+        }
+        else{
         $base_url = $base_url_for_views;
-        require $view_path . 'history dashboard.php';
+        require $view_path . 'history dashboard.php';}
         break;
 
     case '/leave-summary':
-        // TODO: Add security check
+        // Check if user is logged in
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /');
+            exit;
+        }
+        else{
         $base_url = $base_url_for_views;
-        require $view_path . 'leaveSummary.php';
+        require $view_path . 'leaveSummary.php';}
         break;
     
-    case '/test':
-        // TODO: Add security check
-        $base_url = $base_url_for_views;
-        require $view_path . 'test2.php';
-        break;
+    // case '/test':
+    //     // Check if user is logged in
+    //     if (!isset($_SESSION['user_id'])) {
+    //         header('Location: /');
+    //         exit;
+    //     }
+    //     $base_url = $base_url_for_views;
+    //     require $view_path . 'test2.php';
+    //     break;
     case '/request-time-off':
-        // TODO: Add security check
+        // Check if user is logged in
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /EALMS/');
+            exit;
+        }
+        else{
         $base_url = $base_url_for_views;
-        require $view_path . 'requestTimeOff.php';
+        require $view_path . 'requestTimeOff.php';}
         break;
 
     case '/admin':
-        // TODO: Add security check
+        // Check if user is logged in
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /EALMS/');
+            exit;
+        }
+        elseif($_SESSION['user_role'] != 'admin'){
+            header('Location: /EALMS/dashboard');
+            exit;
+        }
+        else{
         $base_url = $base_url_for_views;
-        require $view_path . 'admin.php';
+        require $view_path . 'admin.php';}
         break;
 
     
