@@ -123,7 +123,8 @@ switch ($path_lower) {
         }
         else{
         $base_url = $base_url_for_views;
-        require $view_path . 'leaveSummary.php';}
+        $leave = $leaveController->getLeaveForView();
+        require $view_path . 'leave_summary.php';}
         break;
     
     // case '/test':
@@ -145,6 +146,16 @@ switch ($path_lower) {
         $base_url = $base_url_for_views;
         require $view_path . 'requestTimeOff.php';}
         break;
+    //  case '/leaveSummary':
+    //     // Check if user is logged in
+    //     if (!isset($_SESSION['user_id'])) {
+    //         header('Location: /EALMS/');
+    //         exit;
+    //     }
+    //     else{
+    //     $base_url = $base_url_for_views;
+    //     require $view_path . 'leave_summary.php';}
+    //     break;
 
     case '/admin':
         // Check if user is logged in
@@ -189,9 +200,9 @@ switch ($path_lower) {
         $userController->handleLogout();
         break;
 
-    // case '/leave/request':
-    //     $leaveController->handleRequestLeave();
-    //     break;
+    case '/leave/request':
+        $leaveController->handleRequestLeave();
+        break;
 
     case '/leave/summary':
         $leaveController->getLeaveSummary();

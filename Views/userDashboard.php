@@ -290,7 +290,7 @@
                                     </span>
                                 </div>
                                 <div class="leave-col-action">
-                                    <a href="#" class="see-more-link">See More</a>
+                                    <a href="<?php echo $base_url; ?>leave-summary?id=<?= htmlspecialchars($leaveReq['id']) ?>" class="see-more-link">See More</a>
                                 </div>
                             </div>
                         <?php endforeach; ?>

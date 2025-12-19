@@ -269,9 +269,7 @@
       <!-- <button type="submit" class="btn-submit">Done</button> -->
 
 
-       <button type="submit" class="btn-submit" onclick="window.location.href='<?php echo $base_url; ?>dashboard'; return false;">
-          Done
-        </button>
+       <button type="submit" class="btn-submit" >Done</button>
     </form>
   </div>
 </div>

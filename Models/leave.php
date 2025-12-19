@@ -10,13 +10,13 @@ class Leave {
         $this->conn = $database->conn;
     }
 
-    public function requestLeave($employee_id, $employee_name, $leave_type, $start_date, $end_date, $reason) {
-        $sql = "INSERT INTO {$this->table} (employee_id, employee_name, leave_type, start_date, end_date, reason, status) VALUES (?, ?, ?, ?, ?, ?, 'Pending')";
+    public function requestLeave($employee_id, $employee_name, $leave_type, $start_date, $end_date, $reason, $status = 'Pending') {
+        $sql = "INSERT INTO {$this->table} (start_date, end_date, leave_type, reason, status, user_id) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
         if (!$stmt) {
             return ["success" => false, "message" => "Prepare failed: " . $this->conn->error];
         }
-        $stmt->bind_param("isssss", $employee_id, $employee_name, $leave_type, $start_date, $end_date, $reason);
+        $stmt->bind_param("sssssi", $start_date, $end_date, $leave_type, $reason, $status, $employee_id);
         if ($stmt->execute()) {
             return ["success" => true, "message" => "Leave request submitted successfully", "id" => $stmt->insert_id];
         } else {
@@ -50,6 +50,18 @@ class Leave {
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("si", $status, $id);
         return $stmt->execute();
+    }
+
+    public function getLeaveById($id, $employee_id) {
+        $sql = "SELECT id, employee_id, employee_name, leave_type, start_date, end_date, reason, status, created_at FROM {$this->table} WHERE id = ? AND employee_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            return false;
+        }
+        $stmt->bind_param("ii", $id, $employee_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
     }
 }
 ?>
