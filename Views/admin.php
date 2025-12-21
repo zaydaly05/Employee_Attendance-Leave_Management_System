@@ -15,14 +15,16 @@
     </script>
 
     <?php require_once './Controllers/adminC.php'; ?>
-    
+
 </head>
 
+
 <body>
+    
 
     <!-- SIDEBAR -->
     <div class="sidebar">
-        <h2 class="logo">digg</h2>
+      <div class="logo"><img src="<?php echo $base_url; ?>Public/Images/EALMS Logo.png" style="width: 180px;" height="auto" alt="EALMS Logo"></div>
         <nav>
             <ul>
                 <li class="active"><a href="#">Dashboard</a></li>
@@ -33,12 +35,15 @@
             </ul>
         </nav>
     </div>
-
+  
     <!-- MAIN CONTENT -->
     <div class="main-content">
-
+        
         <!-- LEFT COLUMN -->
         <div class="left-column">
+            <br>
+            <br>
+            <br>
             <h1>Welcome back, Admin 👋</h1>
                 <?php
                 // Define BASE_PATH once in a central config file or index.php
@@ -107,6 +112,10 @@
         <div class="right-column">
                 
             <!-- DASHBOARD SUMMARY -->
+            <br>
+            <br>
+            <br>
+            
             <div class="dashboard-container">
                 <h1 class="dashboard-title">Dashboard Summary</h1>
 
@@ -189,8 +198,8 @@
    
 </body>
 
-<!-- <footer>
-   <?php //include_once 'footer.php'; ?> 
-</footer> -->
+<footer>
+   <?php include_once 'footer.php'; ?> 
+</footer>
 
 </html>

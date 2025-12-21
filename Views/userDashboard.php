@@ -14,7 +14,7 @@
   <div class="container">
     <!-- Sidebar -->  
     <aside class="sidebar">
-      <div class="logo">digg</div>
+      <div class="logo"><img src="<?php echo $base_url; ?>Public/Images/EALMS Logo.png" style="width: 180px;" height="auto" alt="EALMS Logo"></div>
       <nav>
         <a href="#" class="active">
           <span class="icon" aria-hidden="true">📊</span>
@@ -211,6 +211,7 @@
               <?php else: ?>
                 <div class="announcement-empty">
                   <p>No announcements available.</p>
+                  <br>
                   <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 2L2 12h20L12 2z"></path>
                     <line x1="12" y1="8" x2="12" y2="13"></line>
@@ -311,24 +312,65 @@
           <!-- Right side small columns -->
           <div style="flex: 1 1 0; display:flex; flex-direction: column; gap:12px;">
             <!-- Who's on Leave -->
-            <section class="section whos-on-leave" aria-label="Who's on Leave">
-              <div class="section-title">Who's on Leave</div>
-              <div class="filter" role="region" aria-label="On leave filter">
-                On Leave: <span class="count">0</span>
-                <select aria-label="Filter date">
-                  <option>Today</option>
-                  <option>Tomorrow</option>
-                  <option>This Week</option>
-                </select>
-              </div>
-              <div aria-hidden="true" style="text-align:center; padding-top: 30px;">
-                <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="#c9c9c9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                  <line x1="9" y1="9" x2="15" y2="15"></line>
-                  <line x1="15" y1="9" x2="9" y2="15"></line>
-                </svg>
-              </div>
-            </section>
+       <section class="section whos-on-leave" aria-label="Who's on Leave">
+          <div class="section-title">Who's on Leave</div>
+            <?php
+            require_once './Controllers/leaveC.php';
+
+            $leaveController = new LeaveC();
+
+            $filter  = $_GET['filter'] ?? 'today';
+            $onLeave = $leaveController->getOnLeave($filter);
+            $count   = count($onLeave);
+            ?>
+
+
+          <div class="filter" role="region" aria-label="On leave filter">
+            On Leave: <span class="count"><?= $count ?></span>
+
+            <form method="get" style="display:inline;">
+              <select name="filter" onchange="this.form.submit()">
+                <option value="today" <?= $filter === 'today' ? 'selected' : '' ?>>Today</option>
+                <option value="tomorrow" <?= $filter === 'tomorrow' ? 'selected' : '' ?>>Tomorrow</option>
+                <option value="week" <?= $filter === 'week' ? 'selected' : '' ?>>This Week</option>
+              </select>
+            </form>
+          </div>
+
+          <?php if (empty($onLeave)): ?>
+            <!-- Empty State -->
+            <div class="empty-state" style="text-align:center; padding-top:30px;">
+              <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none"
+                  stroke="#c9c9c9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+              </svg>
+              <p>No employees on leave</p>
+            </div>
+          <?php else: ?>
+            <!-- Leave List -->
+            <div class="celebration-reminders-list-user">
+              <?php foreach ($onLeave as $emp): 
+                $leaveType = strtolower($emp['leave_type']);
+                $colorClass = 'blue'; // default
+                if (stripos($leaveType, 'sick') !== false) $colorClass = 'light-blue';
+                elseif (stripos($leaveType, 'casual') !== false) $colorClass = 'purple';
+                elseif (stripos($leaveType, 'earned') !== false) $colorClass = 'green';
+                elseif (stripos($leaveType, 'unpaid') !== false) $colorClass = 'red';
+                elseif (stripos($leaveType, 'half') !== false) $colorClass = 'yellow';
+              ?>
+                <div class="celebration-item-user">
+                  <div class="celebration-name-user"><?= htmlspecialchars($emp['employee_name'], ENT_QUOTES, 'UTF-8') ?></div>
+                  <div class="celebration-date-user"><i class="fas fa-calendar"></i> <?= htmlspecialchars($emp['start_date']) ?> - <?= htmlspecialchars($emp['end_date']) ?></div>
+                  <span class="celebration-type-user <?= $colorClass ?>"><?= htmlspecialchars($emp['leave_type']) ?></span>
+                </div>
+              <?php endforeach; ?>
+            </div>
+          <?php endif; ?>
+        </section>
+
+
 
             <!-- Celebrations this month -->
             <section class="section celebrations" aria-label="Celebrations this month">

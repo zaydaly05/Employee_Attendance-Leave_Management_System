@@ -1,234 +1,190 @@
+<?php
+
+require_once './Controllers/HistoryC.php';
+
+$userId = $_SESSION['user_id'] ?? null;
+if (!$userId) {
+    header('Location: /login');
+    exit;
+}
+
+$historyController = new HistoryC();
+$historyData = $historyController->getUserHistory($userId);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>History - digg Dashboard</title>
+  <title>History</title>
   <link rel="stylesheet" href="<?php echo $base_url; ?>Public/Css/history.css" />
 </head>
+
 <body>
-  <div class="container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="logo">digg</div>
-      <nav>
-        <a href="<?php echo $base_url; ?>dashboard">
-          <span class="icon" aria-hidden="true">📊</span>
-          Dashboard
-        </a>
-        
-        <a href="<?php echo $base_url; ?>history" class="active">
-          <span class="icon" aria-hidden="true">⏰</span>
-          History
-        </a>
-      </nav>
-    </aside>
+<div class="container">
 
-    <!-- Main content -->
-    <div class="main">
-      <!-- <header>
-        <button class="icon-btn" aria-label="Notifications">🔔</button>
-        <button class="icon-btn profile" aria-label="User Profile">👤 ⌵</button>
-      </header> -->
-      <?php  include_once 'header.php';?>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+      <div class="logo"><img src="<?php echo $base_url; ?>Public/Images/EALMS Logo.png" style="width: 180px;" height="auto" alt="EALMS Logo"></div>
+    <nav>
+      <a href="<?php echo $base_url; ?>dashboard">📊 Dashboard</a>
+      <a href="<?php echo $base_url; ?>history" class="active">⏰ History</a>
+    </nav>
+  </aside>
 
-      <main class="content" role="main">
-        <h1 class="page-title">History</h1>
+  <!-- Main -->
+  <div class="main">
+    
+    <?php include_once 'header.php'; ?>
 
-        <section class="history-filters" aria-label="History Filters">
-          <div class="tabs" role="tablist">
-            <button role="tab" aria-selected="true" class="tab active" id="tab-present" data-status="present" tabindex="0">Present</button>
-            <button role="tab" aria-selected="false" class="tab" id="tab-halfday" data-status="halfday" tabindex="-1">Half Day</button>
-            <button role="tab" aria-selected="false" class="tab" id="tab-absent" data-status="absent" tabindex="-1">Absent</button>
-          </div>
+    <main class="content">
+      <h1 class="page-title">History</h1>
 
-          <div class="period-buttons" role="group" aria-label="Select period">
-            <button class="period-btn active" type="button" data-period="1w">1W</button>
-            <button class="period-btn" type="button" data-period="1m">1M</button>
-            <button class="period-btn" type="button" data-period="3m">3M</button>
-            <button class="period-btn" type="button" data-period="6m">6M</button>
-            <button class="period-btn" type="button" data-period="1y">1Y</button>
-            <button class="period-btn" type="button" data-period="all">ALL</button>
-          </div>
+      <!-- Filters -->
+      <section class="history-filters">
+        <div class="tabs">
+          <button class="tab active" data-status="present">Present</button>
+          <button class="tab" data-status="halfday">Half Day</button>
+          <button class="tab" data-status="absent">Absent</button>
+        </div>
 
-          <form class="date-range" aria-label="Select date range" onsubmit="return false;">
-            <label for="start-date" class="sr-only">Start Date</label>
-            <input type="date" id="start-date" name="start-date" placeholder="MM-DD-YYYY" />
+        <div class="period-buttons">
+          <button class="period-btn active" data-period="1w">1W</button>
+          <button class="period-btn" data-period="1m">1M</button>
+          <button class="period-btn" data-period="3m">3M</button>
+          <button class="period-btn" data-period="6m">6M</button>
+          <button class="period-btn" data-period="1y">1Y</button>
+          <button class="period-btn" data-period="all">ALL</button>
+        </div>
 
-            <label for="end-date" class="sr-only">End Date</label>
-            <input type="date" id="end-date" name="end-date" placeholder="MM-DD-YYYY" />
-          </form>
-        </section>
+        <div class="date-range">
+          <input type="date" id="start-date">
+          <input type="date" id="end-date">
+        </div>
+      </section>
 
-        <section class="history-table-section" aria-labelledby="history-table-title">
-          <h2 id="history-table-title" class="sr-only">History Table</h2>
-          <table class="history-table" role="grid" aria-live="polite" aria-relevant="all" aria-atomic="true">
-            <thead>
-              <tr>
-                <th scope="col">Date</th>
-                <th scope="col">Day</th>
-                <th scope="col">Check In</th>
-                <th scope="col">Check Out</th>
-                <th scope="col">Work Time</th>
-                <th scope="col">Status</th>
-              </tr>
-            </thead>
-            <tbody id="history-table-body">
-              <!-- Dynamic rows inserted here -->
-            </tbody>
-          </table>
-        </section>
-
-      </main>
-    </div>
+      <!-- Table -->
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Day</th>
+            <th>Check In</th>
+            <th>Check Out</th>
+            <th>Work Time</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="history-table-body"></tbody>
+      </table>
+    </main>
   </div>
+</div>
+
+<?php include_once 'footer.php'; ?>
+
+<!-- PHP → JS DATA -->
+<script>
+const historyData = <?= json_encode($historyData, JSON_UNESCAPED_UNICODE) ?>;
+</script>
 
 <script>
-  // Sample dataset with dates, status and work info
-  const historyData = [
-    { date: "2025-09-23", day: "Monday", checkIn: "10:30 AM", checkOut: "8:30 PM", workTime: "08H 00M", status: "present" },
-    { date: "2025-09-22", day: "Sunday", checkIn: "09:00 AM", checkOut: "1:00 PM", workTime: "04H 00M", status: "halfday" },
-    { date: "2025-09-21", day: "Saturday", checkIn: "-", checkOut: "-", workTime: "00H 00M", status: "absent" },
-    { date: "2025-09-20", day: "Friday", checkIn: "10:00 AM", checkOut: "7:00 PM", workTime: "07H 00M", status: "present" },
-    // Add more records as needed
-  ];
+const tabs = document.querySelectorAll(".tab");
+const periodButtons = document.querySelectorAll(".period-btn");
+const tableBody = document.querySelector("#history-table-body");
+const startDateInput = document.querySelector("#start-date");
+const endDateInput = document.querySelector("#end-date");
 
-  // DOM Elements
-  const tabs = document.querySelectorAll(".tab");
-  const periodButtons = document.querySelectorAll(".period-btn");
-  const startDateInput = document.querySelector("#start-date");
-  const endDateInput = document.querySelector("#end-date");
-  const tableBody = document.querySelector("#history-table-body");
+let selectedStatus = "present";
+let selectedPeriod = "1w";
 
-  let selectedStatus = "present"; // default tab
-  let selectedPeriod = "1w"; // default period
+function parseDate(d) { return new Date(d); }
 
-  // Helper: Parse date string "YYYY-MM-DD" to Date object
-  function parseDate(dateStr) {
-    const parts = dateStr.split("-");
-    return new Date(parts[0], parts[1] - 1, parts[2]);
+function getPeriodStartDate(period) {
+  const now = new Date();
+  switch(period){
+    case "1w": return new Date(now.setDate(now.getDate() - 7));
+    case "1m": return new Date(now.setMonth(now.getMonth() - 1));
+    case "3m": return new Date(now.setMonth(now.getMonth() - 3));
+    case "6m": return new Date(now.setMonth(now.getMonth() - 6));
+    case "1y": return new Date(now.setFullYear(now.getFullYear() - 1));
+    default: return new Date(0);
+  }
+}
+
+function filterData() {
+  let data = historyData.filter(r => r.type !== 'leave' && r.status === selectedStatus || r.type === 'leave');
+
+  if (startDateInput.value) {
+    data = data.filter(r => new Date(r.work_date) >= new Date(startDateInput.value));
+  } else {
+    data = data.filter(r => new Date(r.work_date) >= getPeriodStartDate(selectedPeriod));
   }
 
-  // Helper: Format Date object to "MMM-DD-YYYY" (example: Sept-23-2025)
-  function formatDate(dateObj) {
-    const options = { month: 'short', day: '2-digit', year: 'numeric' };
-    return dateObj.toLocaleDateString('en-US', options).replace(',', '');
+  if (endDateInput.value) {
+    data = data.filter(r => new Date(r.work_date) <= new Date(endDateInput.value));
   }
 
-  // Calculate the start date for given period
-  function getPeriodStartDate(period) {
-    const now = new Date();
-    switch(period){
-      case "1w": return new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
-      case "1m": return new Date(now.getFullYear(), now.getMonth() -1, now.getDate());
-      case "3m": return new Date(now.getFullYear(), now.getMonth() -3, now.getDate());
-      case "6m": return new Date(now.getFullYear(), now.getMonth() -6, now.getDate());
-      case "1y": return new Date(now.getFullYear() -1, now.getMonth(), now.getDate());
-      case "all": return new Date(0); // all time
-      default: return new Date(0);
-    }
+  return data;
+}
+
+function renderTable() {
+  const data = filterData();
+  if (!data.length) {
+    tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center">No records found</td></tr>`;
+    return;
   }
 
-  // Filter data based on selected status and period or date range
-  function filterData() {
-    let filtered = historyData.filter(rec => rec.status === selectedStatus);
-
-    // Apply date range filter if inputs have values
-    const startInput = startDateInput.value;
-    const endInput = endDateInput.value;
-
-    if (startInput) {
-      const start = new Date(startInput);
-      filtered = filtered.filter(rec => parseDate(rec.date) >= start);
-    } else {
-      // apply period filter if no start date chosen
-      const periodStart = getPeriodStartDate(selectedPeriod);
-      filtered = filtered.filter(rec => parseDate(rec.date) >= periodStart);
-    }
-
-    if (endInput) {
-      const end = new Date(endInput);
-      filtered = filtered.filter(rec => parseDate(rec.date) <= end);
-    }
-
-    // Sort by date descending (most recent first)
-    filtered.sort((a,b) => parseDate(b.date) - parseDate(a.date));
-
-    return filtered;
-  }
-
-  // Render table rows dynamically
-  function renderTable() {
-    const records = filterData();
-    if(records.length === 0){
-      tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 20px; color: #666;">No records found</td></tr>`;
-      return;
-    }
-    let html = "";
-    records.forEach(rec => {
-      html += `
+  tableBody.innerHTML = data.map(r => {
+    if (r.type === 'leave') {
+      return `
         <tr>
-          <td>${formatDate(parseDate(rec.date))}</td>
-          <td>${rec.day}</td>
-          <td>${rec.checkIn}</td>
-          <td>${rec.checkOut}</td>
-          <td>${rec.workTime}</td>
-          <td>${capitalize(rec.status)}</td>
+          <td>${new Date(r.work_date).toLocaleDateString()}</td>
+          <td>${new Date(r.work_date).toLocaleDateString('en-US',{weekday:'long'})}</td>
+          <td>Leave</td>
+          <td>-</td>
+          <td>${r.status}</td>
+          <td>Approved</td>
         </tr>
       `;
-    });
-    tableBody.innerHTML = html;
-  }
+    } else {
+      return `
+        <tr>
+          <td>${new Date(r.work_date).toLocaleDateString()}</td>
+          <td>${new Date(r.work_date).toLocaleDateString('en-US',{weekday:'long'})}</td>
+          <td>${r.check_in ?? '-'}</td>
+          <td>${r.check_out ?? '-'}</td>
+          <td>${r.work_time ?? '00H 00M'}</td>
+          <td>${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</td>
+        </tr>
+      `;
+    }
+  }).join('');
+}
 
-  // Capitalize first letter helper
-  function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
+tabs.forEach(tab => {
+  tab.onclick = () => {
+    tabs.forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    selectedStatus = tab.dataset.status;
+    renderTable();
+  };
+});
 
-  // Setup event listeners for tabs
-  tabs.forEach(tab => {
-    tab.addEventListener("click", e => {
-      // Update aria and classes for tabs
-      tabs.forEach(t => {
-        t.classList.remove("active");
-        t.setAttribute("aria-selected", "false");
-        t.setAttribute("tabindex", "-1");
-      });
-      e.currentTarget.classList.add("active");
-      e.currentTarget.setAttribute("aria-selected", "true");
-      e.currentTarget.setAttribute("tabindex", "0");
-      selectedStatus = e.currentTarget.dataset.status;
-      renderTable();
-    });
-  });
+periodButtons.forEach(btn => {
+  btn.onclick = () => {
+    periodButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    selectedPeriod = btn.dataset.period;
+    startDateInput.value = endDateInput.value = "";
+    renderTable();
+  };
+});
 
-  // Setup event listeners for period buttons
-  periodButtons.forEach(btn => {
-    btn.addEventListener("click", e => {
-      periodButtons.forEach(b => b.classList.remove("active"));
-      e.currentTarget.classList.add("active");
-      selectedPeriod = e.currentTarget.dataset.period;
-      // Clear date inputs when using a preset period
-      startDateInput.value = "";
-      endDateInput.value = "";
-      renderTable();
-    });
-  });
+[startDateInput, endDateInput].forEach(i => i.onchange = renderTable);
 
-  // Date inputs event to clear period buttons' active when typing custom date range
-  [startDateInput, endDateInput].forEach(input => {
-    input.addEventListener("change", e => {
-      // Remove active class from period buttons because manual date selected
-      periodButtons.forEach(b => b.classList.remove("active"));
-      renderTable();
-    });
-  });
-
-  // Initial render
-  renderTable();
+renderTable();
 </script>
 </body>
-<footer>
-  <?php  include_once 'footer.php';?>
-</footer>
 </html>

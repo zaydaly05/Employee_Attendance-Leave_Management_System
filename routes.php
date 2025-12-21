@@ -172,6 +172,19 @@ switch ($path_lower) {
         require $view_path . 'admin.php';}
         break;
 
+
+    case '/settings':
+        // Check if user is logged in
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /EALMS/');
+            exit;
+        }
+        else{
+        $base_url = $base_url_for_views;
+        require $view_path . 'settings.php';}
+        break;
+
+
     
     case '/logout':
         $base_url = $base_url_for_views;
@@ -244,7 +257,7 @@ switch ($path_lower) {
         echo "<p>The page you are looking for was not found.</p>";
         // Debug: Show the path that was requested (remove this in production)
         echo "<p>Debug: Requested path was: <strong>" . htmlspecialchars($path) . "</strong></p>";
-        echo "<p>Available routes: /, /login, /signup, /dashboard, /history, /leave-summary, /request-time-off</p>";
+        echo "<p>Available routes: /, /login, /signup, /dashboard, /history, /leave-summary, /request-time-off, /settings</p>";
         break;
 }
 ?>

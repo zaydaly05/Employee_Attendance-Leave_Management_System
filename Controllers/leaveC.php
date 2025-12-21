@@ -158,5 +158,48 @@ class LeaveC {
 
         return null;
     }
+
+    public function getOnLeave(string $filter = 'today'): array{
+        $today = date('Y-m-d');
+
+        switch ($filter) {
+            case 'tomorrow':
+                $from = date('Y-m-d', strtotime('+1 day'));
+                $to   = $from;
+                break;
+
+            case 'week':
+                $from = $today;
+                $to   = date('Y-m-d', strtotime('+7 days'));
+                break;
+
+            default: // today
+                $from = $today;
+                $to   = $today;
+        }
+
+        $stmt = $this->conn->prepare("
+            SELECT u.name as employee_name, l.leave_type, l.start_date, l.end_date
+            FROM leaves l
+            JOIN users u ON l.user_id = u.id
+            WHERE l.status = 'Approved'
+            AND l.start_date <= ?
+            AND l.end_date >= ?
+        ");
+
+        $stmt->bind_param("ss", $to, $from);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+        $onLeave = [];
+
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $onLeave[] = $row;
+            }
+        }
+
+        return $onLeave;
+    }
 }
 ?>
