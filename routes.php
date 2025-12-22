@@ -127,15 +127,6 @@ switch ($path_lower) {
         require $view_path . 'leave_summary.php';}
         break;
     
-    // case '/test':
-    //     // Check if user is logged in
-    //     if (!isset($_SESSION['user_id'])) {
-    //         header('Location: /');
-    //         exit;
-    //     }
-    //     $base_url = $base_url_for_views;
-    //     require $view_path . 'test2.php';
-    //     break;
     case '/request-time-off':
         // Check if user is logged in
         if (!isset($_SESSION['user_id'])) {
@@ -146,17 +137,6 @@ switch ($path_lower) {
         $base_url = $base_url_for_views;
         require $view_path . 'requestTimeOff.php';}
         break;
-    //  case '/leaveSummary':
-    //     // Check if user is logged in
-    //     if (!isset($_SESSION['user_id'])) {
-    //         header('Location: /EALMS/');
-    //         exit;
-    //     }
-    //     else{
-    //     $base_url = $base_url_for_views;
-    //     require $view_path . 'leave_summary.php';}
-    //     break;
-
     case '/admin':
         // Check if user is logged in
         if (!isset($_SESSION['user_id'])) {
@@ -174,7 +154,6 @@ switch ($path_lower) {
 
 
     case '/settings':
-        // Check if user is logged in
         if (!isset($_SESSION['user_id'])) {
             header('Location: /EALMS/');
             exit;
@@ -192,14 +171,6 @@ switch ($path_lower) {
         require $view_path . 'login.php';
         break;
 
-    // case '/footer':
-    //     $base_url = $base_url_for_views;
-    //     session_destroy();
-    //     require $view_path . 'footer.php';
-    //     break;
-    // --- Action Routes (Controllers) ---
-    // These routes handle form submissions (e.g., POST requests)
-    // They call functions (methods) in your controllers.
 
     case '/auth/login':
         $userController->handleLogin();

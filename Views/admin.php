@@ -38,12 +38,8 @@
   
     <!-- MAIN CONTENT -->
     <div class="main-content">
-        
         <!-- LEFT COLUMN -->
         <div class="left-column">
-            <br>
-            <br>
-            <br>
             <h1>Welcome back, Admin 👋</h1>
                 <?php
                 // Define BASE_PATH once in a central config file or index.php
@@ -112,10 +108,6 @@
         <div class="right-column">
                 
             <!-- DASHBOARD SUMMARY -->
-            <br>
-            <br>
-            <br>
-            
             <div class="dashboard-container">
                 <h1 class="dashboard-title">Dashboard Summary</h1>
 
@@ -192,7 +184,6 @@
             </div> 
         </div><!-- RIGHT COLUMN END -->
       
-            <!-- Leave Requests -->
                 
     </div><!-- MAIN CONTENT END --> 
    

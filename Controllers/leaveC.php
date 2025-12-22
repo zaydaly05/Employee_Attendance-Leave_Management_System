@@ -35,13 +35,6 @@ class LeaveC {
             exit;
         }
 
-        // $employee_id = $_SESSION['user_id'] ?? null;
-        // $employee_name = $_SESSION['user_name'] ?? 'Unknown';
-        // $leave_type = $_POST['leave_type'] ?? '';
-        // $start_date = $_POST['start_date'] ?? '';
-        // $end_date = $_POST['end_date'] ?? '';
-        // $reason = $_POST['reason'] ?? '';
-        
         $employee_id = $_SESSION['user_id'] ?? null;
         $employee_name = $_SESSION['user_name'] ?? 'Unknown';
         $leave_type = $_POST['leave_type'] ?? 'Sick Leave';
